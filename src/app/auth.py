@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from app.models import InternalUser
 
 
-from app.db import fake_users_db
+from app.repositories.fake_user_repo import fake_users_db
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 

@@ -9,12 +9,11 @@ from fastapi import APIRouter, Depends
 
 from app.auth import get_password_hash
 from app.config import get_settings
-from app.db import fake_users_db
 from app.dependencies import get_current_user
 from app.models import InternalUser, User
+from app.repositories.fake_user_repo import fake_users_db
 
 settings = get_settings()
-
 
 router = APIRouter()
 
