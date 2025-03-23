@@ -1,10 +1,11 @@
 """Middleware для логирования HTTP-запросов с привязкой контекста и корреляционным ID."""
 
-import uuid
 from typing import TYPE_CHECKING
 
 import structlog
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+
+from app.logging.context import bind_request_context
 
 if TYPE_CHECKING:
     from starlette.requests import Request
@@ -32,22 +33,13 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         Raises:
             Любое исключение, возникшее при обработке запроса.
         """
-        request_id = request.headers.get('X-Request-ID') or str(uuid.uuid4())
-        structlog.contextvars.clear_contextvars()
-        structlog.contextvars.bind_contextvars(
-            request_id=request_id,
-            method=request.method,
-            path=request.url.path,
-        )
+        request_id = bind_request_context(request)
 
         try:
             response = await call_next(request)
         except Exception as exc:
             logger.error(
                 'unhandled_exception',
-                method=request.method,
-                path=request.url.path,
-                request_id=request_id,
                 error=str(exc),
             )
             raise

@@ -7,7 +7,7 @@ from fastapi.exceptions import RequestValidationError
 from app.auth import get_password_hash
 from app.config import get_settings
 from app.exceptions import base_app_error_handler, BaseAppError, validation_error_handler
-from app.logging import configure_logging
+from app.logging.logging import configure_logging
 from app.middleware.logging_middleware import LoggingMiddleware
 from app.models import InternalUser
 from app.predict import router as predict_router
@@ -27,6 +27,7 @@ def init_fake_users() -> None:
         None
     """
     settings = get_settings()
+
     fake_users_db['john_doe'] = InternalUser(
         username='john_doe',
         hashed_password=get_password_hash(settings.app.secret_key),
