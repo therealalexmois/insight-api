@@ -50,6 +50,7 @@ def configure_logging() -> None:
             structlog.processors.StackInfoRenderer(),
             structlog.processors.format_exc_info,
             structlog.processors.JSONRenderer(),
+            structlog.contextvars.merge_contextvars,
         ],
         context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),
