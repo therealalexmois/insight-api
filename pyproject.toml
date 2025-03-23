@@ -1,5 +1,5 @@
 [project]
-name = "ml-api"
+name = "insight-api"
 version = "0.1.0"
 license = "MIT"
 keywords = ["fastapi", "ml", "machine-learning", "api", "inference"]
@@ -26,6 +26,7 @@ fastapi = {extras = ["standard"], version = "^0.115.11"}
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 uvicorn = "==0.30.0"
 structlog = "==25.2.0"
+pydantic-settings = "==2.8.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "==4.1.0"
