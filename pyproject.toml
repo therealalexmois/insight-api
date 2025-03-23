@@ -1,0 +1,76 @@
+[project]
+name = "ml-api"
+version = "0.1.0"
+license = "MIT"
+keywords = ["fastapi", "ml", "machine-learning", "api", "inference"]
+description = "A FastAPI-based REST API for serving machine learning model predictions."
+authors = [
+    {name = "Aleksander Moiseenko", email = "alex.mois.developer@gmail.com"},
+]
+readme = "README.md"
+requires-python = ">=3.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
+repository = "https://github.com/therealalexmois/ml-fortune-api"
+packages = [{ include = "app", from = "src" }]
+
+
+[tool.poetry.dependencies]
+python = ">=3.13,<4"
+fastapi = {extras = ["standard"], version = "^0.115.11"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+uvicorn = "==0.30.0"
+structlog = "==25.2.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "==4.1.0"
+ruff = "==0.9.6"
+mypy = "==1.15.0"
+commitizen = "==4.2.1"
+
+[tool.poetry.group.test.dependencies]
+pytest = "==8.3.4"
+pytest-cov = "==6.0.0"
+pytest-mock = "==3.14.0"
+
+[tool.mypy]
+files = ["**/*/*.py"]               # Разделенный запятыми список путей, которые должны быть проверены mypy если, ни один из них не указан в командной строке..
+python_version = "3.13"             # Обеспечивает совместимость с Python 3.12.
+exclude = [                         # Пропускает папки.
+    "^tests/.*/__init__\\.py$",
+    "^dist/",
+    "^.*/migrations/.*$",           # Исключить все папки миграций
+]
+cache_dir = ".mypy_cache"           # Кэширование результатов для ускорения последующих запусков.
+allow_redefinition  = false         # Позволяет переопределять переменные с произвольным типом, если переопределение находится в том же блоке.
+check_untyped_defs = true           # Проверяет внутреннюю часть функций без аннотаций типов.
+disallow_any_generics = true        # Запрещает использование общих типов, в которых не указаны явные параметры типа.
+disallow_incomplete_defs = true     # Запрещает определять функции с неполными аннотациями типов, но при этом допускает полностью неаннотированные определения.
+disallow_subclassing_any = false    # Запрещает подклассифицировать значение типа Any.
+disallow_untyped_calls = true       # Запрещает вызов функций без аннотаций типов из функций с аннотациями типов.
+disallow_untyped_decorators = false # Сообщает об ошибке, когда функция с аннотациями типов украшается декоратором без аннотаций.
+disallow_untyped_defs = true        # Запрещает определять функции без аннотаций типов или с неполными аннотациями типов.
+extra_checks = false                # Включает дополнительные проверки, которые технически правильны, но могут быть непрактичны в реальном коде.
+follow_imports = "normal"           # Настраивает, как mypy будет следовать за импортированными модулями, которые не были явно переданы через командную строку.
+ignore_errors = false               # Игнорирует все нефатальные ошибки.
+ignore_missing_imports = true       # Подавляет сообщения об ошибках импорта, которые не могут быть разрешены.
+implicit_optional = false           # Запрещает неявные опциональные типы.
+implicit_reexport = false           # Позволяет другим модулям импортировать в модуль значения рассматриваются как экспортированные.
+local_partial_types = true          # Запрещает выводить тип переменной None из двух присваиваний в разных диапазонах.
+namespace_packages = true           # Включает пакеты пространства имен в стиле PEP 420.
+pretty = true                       # Красивое оформление сообщений об ошибках.
+show_error_codes = true             # Отображение подробных кодов ошибок в выходных данных.
+strict = true                       # Включает строгий режим (все основные проверки безопасности).
+strict_equality = true              # Запрещает проверки на равенство, идентичность и контейнеры между непересекающимися типами.
+strict_optional = true              # Отключает проверку опциональных типов и значений None.
+warn_no_return = true               # Показывает ошибки, связанные с отсутствием операторов возврата на некоторых путях выполнения.
+warn_redundant_casts = true         # Предупреждает, если cast() является избыточным.
+warn_return_any = true              # Выдает предупреждение при возврате значения с типом Any из функции, объявленной с возвращаемым типом не Any.
+warn_unreachable = true             # Выводит предупреждение, когда встречается код, признанный недоступным или избыточным после выполнения анализа типов.
+warn_unused_configs = true          # Предупреждает, если какой-либо параметр конфигурации mypy не используется.
+warn_unused_ignores = true          # Предупреждает, если # type: ignore является ненужным.
