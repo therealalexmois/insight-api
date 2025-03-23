@@ -21,7 +21,12 @@ def create_app() -> FastAPI:
     """
     configure_logging()
 
-    app = FastAPI(title=settings.app.name, version=settings.app.version, description=settings.app.description)
+    app = FastAPI(
+        title=settings.app.name,
+        version=settings.app.version,
+        description=settings.app.description,
+        debug=settings.app.debug,
+    )
     app.include_router(users_router)
     app.include_router(predict_router)
     app.add_exception_handler(BaseAppError, base_app_error_handler)

@@ -28,6 +28,7 @@ DEFAULT_APP_SECRET_KEY: Final[str] = 'dev_secret'
 DEFAULT_APP_NAME: Final[str] = 'insight-api'
 DEFAULT_APP_DESCRIPTION: Final[str] = 'Gateway for machine learning model predictions.'
 DEFAULT_APP_RELOAD: Final[bool] = False
+DEFAULT_APP_DEBUG: Final[bool] = False
 
 _APP_PACKAGE_CONFIG_PATH: Final[Path] = Path().absolute() / 'pyproject.toml'
 
@@ -77,6 +78,7 @@ class AppSettings(BaseSettings):
         description='Секретный ключ приложения, используемый, например, для подписи токенов.',
     )
     reload: bool = Field(default=DEFAULT_APP_RELOAD, description='Включать режим авто-перезагрузки.')
+    debug: bool = Field(default=DEFAULT_APP_DEBUG, description='Включает режим отладки FastAPI.')
 
     model_config = SettingsConfigDict(**_ENV_SETTINGS)
 
