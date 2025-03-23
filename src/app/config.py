@@ -23,13 +23,11 @@ DEFAULT_APP_HOST: Final[str] = '127.0.0.1'
 DEFAULT_APP_PORT: Final[int] = 8000
 DEFAULT_APP_VERSION: Final[str] = '0.0.0'
 DEFAULT_APP_LOG_LEVEL: Final[LogLevel] = LogLevel.INFO
-
 DEFAULT_APP_ENV_FILE: Final[str] = '.env.local'
-
 DEFAULT_APP_SECRET_KEY: Final[str] = 'dev_secret'
-
 DEFAULT_APP_NAME: Final[str] = 'insight-api'
 DEFAULT_APP_DESCRIPTION: Final[str] = 'Gateway for machine learning model predictions.'
+DEFAULT_APP_RELOAD: Final[bool] = False
 
 _APP_PACKAGE_CONFIG_PATH: Final[Path] = Path().absolute() / 'pyproject.toml'
 
@@ -78,6 +76,7 @@ class AppSettings(BaseSettings):
         default=DEFAULT_APP_SECRET_KEY,
         description='Секретный ключ приложения, используемый, например, для подписи токенов.',
     )
+    reload: bool = Field(default=DEFAULT_APP_RELOAD, description='Включать режим авто-перезагрузки.')
 
     model_config = SettingsConfigDict(**_ENV_SETTINGS)
 

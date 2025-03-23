@@ -41,7 +41,7 @@ def start_app() -> None:
         'app.main:app',
         host=settings.app.host,
         port=settings.app.port,
-        reload=True,
+        reload=settings.app.reload,
     )
 
 
