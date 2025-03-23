@@ -1,11 +1,8 @@
 """Pydantic модели для пользовательских данных и запросов/ответов на прогнозирование моделей."""
 
-from typing import TYPE_CHECKING
-
 from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from app.inference import Prediction
+from app.inference import Prediction  # noqa: TCH001
 
 
 class User(BaseModel):
@@ -47,6 +44,6 @@ class PredictRequest(BaseModel):
 class PredictResponse(BaseModel):
     """Модель ответа API, содержащая результат предсказания."""
 
-    prediction: 'Prediction'
+    prediction: Prediction
 
     model_config = {'json_schema_extra': {'examples': [{'prediction': 'positive'}]}}
