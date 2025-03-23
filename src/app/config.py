@@ -80,7 +80,7 @@ class LoggingSettings(BaseSettings):
     """Настройки логирования."""
 
     level: LogLevel = Field(
-        default=DEFAULT_APP_LOG_LEVEL, description='Уровень логирования приложения: debug, info или error.'
+        default=DEFAULT_APP_LOG_LEVEL, description='Уровень логирования приложения: info, warning или error.'
     )
 
     model_config = SettingsConfigDict(**_ENV_SETTINGS)
