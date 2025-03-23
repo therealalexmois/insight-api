@@ -29,6 +29,7 @@ DEFAULT_APP_ENV_FILE: Final[str] = '.env.local'
 DEFAULT_APP_SECRET_KEY: Final[str] = 'dev_secret'
 
 DEFAULT_APP_NAME: Final[str] = 'insight-api'
+DEFAULT_APP_DESCRIPTION: Final[str] = 'Gateway for machine learning model predictions.'
 
 _APP_PACKAGE_CONFIG_PATH: Final[Path] = Path().absolute() / 'pyproject.toml'
 
@@ -50,6 +51,11 @@ class AppSettings(BaseSettings):
 
     name: str = Field(
         default_factory=lambda: _extract_project_field('name', _APP_PACKAGE_CONFIG_PATH) or DEFAULT_APP_NAME,
+        description='Название приложения, полученное из pyproject.toml.',
+    )
+    description: str = Field(
+        default_factory=lambda: _extract_project_field('description', _APP_PACKAGE_CONFIG_PATH)
+        or DEFAULT_APP_DESCRIPTION,
         description='Название приложения, полученное из pyproject.toml.',
     )
     host: str = Field(
