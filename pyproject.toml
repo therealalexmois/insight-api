@@ -18,6 +18,7 @@ build-backend = "poetry.core.masonry.api"
 package-mode = false
 repository = "https://github.com/therealalexmois/ml-fortune-api"
 packages = [{ include = "app", from = "src" }]
+include = ["src/app/py.typed"]
 
 
 [tool.poetry.dependencies]
