@@ -11,12 +11,16 @@
 	default \
 	activate
 
+PYTHONPATH := src
 PYTHON := poetry run python
 POETRY := poetry
 PRE_COMMIT := poetry run pre-commit
 RUFF := poetry run ruff
 PYTEST := poetry run pytest
 MYPY := poetry run mypy
+
+debug-pythonpath:
+	@echo "PYTHONPATH is set to: $(PYTHONPATH)"
 
 # Активировать виртуальную среду
 activate:
@@ -97,7 +101,7 @@ clean:
 ci-checks: lint type-check
 
 start:
-	@$(PYTHON) -m src.app.main $(ARGS)
+	@PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m app.main $(ARGS)
 
 # Цель по умолчанию (установка зависимостей)
 default: install
