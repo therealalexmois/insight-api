@@ -47,6 +47,8 @@ def create_app() -> FastAPI:
     init_fake_users()
 
     app = FastAPI(
+        docs_url=None,
+        redoc_url='/',
         title=settings.app.name,
         version=settings.app.version,
         description=settings.app.description,
