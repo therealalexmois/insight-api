@@ -8,10 +8,13 @@ if TYPE_CHECKING:
 from fastapi import APIRouter, Depends
 
 from app.auth import get_password_hash
-from app.config import DEFAULT_SECRET_KEY
+from app.config import get_settings
 from app.db import fake_users_db
 from app.dependencies import get_current_user
 from app.models import InternalUser, User
+
+settings = get_settings()
+
 
 router = APIRouter()
 
@@ -44,7 +47,7 @@ def create_user(user: User) -> User:
         Созданный пользователь.
     """
     user_data = user.model_dump()
-    user_data['hashed_password'] = get_password_hash(DEFAULT_SECRET_KEY)
+    user_data['hashed_password'] = get_password_hash(settings.app.secret_key)
     internal_user = InternalUser(**user_data)
     fake_users_db[user.username] = internal_user
     return user
