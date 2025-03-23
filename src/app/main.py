@@ -34,16 +34,13 @@ def create_app() -> FastAPI:
     return app
 
 
-app = create_app()
-
-
 def start_app() -> None:
     """Запускает приложение с помощью uvicorn.
 
     Используется в локальной разработке через Makefile.
     """
     uvicorn.run(
-        'app.main:app',
+        'src.app.main:create_app()',
         host=settings.app.host,
         port=settings.app.port,
         reload=settings.app.reload,
