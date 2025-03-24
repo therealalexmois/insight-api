@@ -79,11 +79,11 @@ type-check:
 
 # Запуск тестов
 test:
-	@$(PYTEST) -p no:cacheprovider
+	PYTHONPATH=src $(PYTEST) -p no:cacheprovider
 
 # Запуск тестов с покрытием
 test-with-coverage:
-	@$(PYTEST) -p no:cacheprovider --cov --cov-report=term-missing --cov-report=html
+	PYTHONPATH=src $(PYTEST) -p no:cacheprovider --cov=src --cov-report=term-missing
 
 # Установка pre-commit hooks
 install-pre-commit:
