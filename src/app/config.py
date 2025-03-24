@@ -168,7 +168,7 @@ def _extract_project_field(field_name: str, app_config_path: Path) -> str | None
         raise
 
 
-@lru_cache
+@lru_cache(1)
 def get_settings() -> 'Settings':
     """Возвращает кэшированный экземпляр настроек приложения.
 
