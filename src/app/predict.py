@@ -1,5 +1,7 @@
 """Маршруты, связанные с предсказаниями модели."""
 
+from http import HTTPStatus
+
 from fastapi import APIRouter
 
 from app.inference import predict_from_features
@@ -8,7 +10,7 @@ from app.models import PredictRequest, PredictResponse
 router = APIRouter()
 
 
-@router.post('/predict/', response_model=PredictResponse)
+@router.post('/predict/', response_model=PredictResponse, status_code=HTTPStatus.OK, summary='predict')
 def predict(request: PredictRequest) -> PredictResponse:
     """Возвращает предсказание модели на основе входных признаков.
 

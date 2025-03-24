@@ -1,20 +1,15 @@
 """Пользовательские ошибки и обработчики исключений."""
 
+from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 import structlog
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.error_codes import (
-    HTTP_400_BAD_REQUEST,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_404_NOT_FOUND,
-    HTTP_409_CONFLICT,
-    HTTP_500_INTERNAL_SERVER_ERROR,
-)
-
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from fastapi import Request
 
 
@@ -24,7 +19,7 @@ log = structlog.get_logger()
 class BaseAppError(Exception):
     """Базовая ошибка приложения."""
 
-    def __init__(self, message: str, status_code: int = HTTP_400_BAD_REQUEST) -> None:
+    def __init__(self, message: str, status_code: HTTPStatus = HTTPStatus.BAD_REQUEST) -> None:
         """Инициализирует ошибку приложения с сообщением и HTTP-статусом.
 
         Args:
@@ -32,7 +27,7 @@ class BaseAppError(Exception):
             status_code: HTTP-код, возвращаемый клиенту.
         """
         self.message = message
-        self.status_code = status_code
+        self.status_code = int(status_code)
 
 
 class UserAlreadyExistsError(BaseAppError):
@@ -43,7 +38,7 @@ class UserAlreadyExistsError(BaseAppError):
 
         HTTP 409 Conflict.
         """
-        super().__init__('User already exists', status_code=HTTP_409_CONFLICT)
+        super().__init__('User already exists', status_code=HTTPStatus.CONFLICT)
 
 
 class UserNotFoundError(BaseAppError):
@@ -54,7 +49,7 @@ class UserNotFoundError(BaseAppError):
 
         HTTP 404 Not Found.
         """
-        super().__init__('User not found', status_code=HTTP_404_NOT_FOUND)
+        super().__init__('User not found', status_code=HTTPStatus.NOT_FOUND)
 
 
 class InvalidCredentialsError(BaseAppError):
@@ -65,51 +60,62 @@ class InvalidCredentialsError(BaseAppError):
 
         HTTP 401 Unauthorized.
         """
-        super().__init__('Incorrect username or password', status_code=HTTP_401_UNAUTHORIZED)
+        super().__init__('Incorrect username or password', status_code=HTTPStatus.UNAUTHORIZED)
 
 
 async def base_app_error_handler(_: 'Request', exc: Exception) -> JSONResponse:
-    """Обработчик ошибок для BaseAppError.
+    """Обработчик ошибок приложения.
 
     Args:
-        _: Неиспользуемый объект запроса.
-        exc: Исключение, ожидаемое как BaseAppException.
+        _: Объект запроса (не используется).
+        exc: Исключение, которое должно быть экземпляром BaseAppError.
 
     Returns:
-        JSON-ответ с сообщением об ошибке и статусом.
+        JSON-ответ с сообщением об ошибке и HTTP-статусом.
     """
     if isinstance(exc, BaseAppError):
         log.warning('application_error', message=exc.message, status_code=exc.status_code)
-        return JSONResponse(
-            status_code=exc.status_code,
-            content={'detail': exc.message},
-        )
+        return _internal_error_response(status_code=exc.status_code, content=exc.message)
 
     log.error('unexpected_exception', exc_info=exc)
-    return JSONResponse(
-        status_code=HTTP_500_INTERNAL_SERVER_ERROR,
-        content={'detail': 'Internal Server Error'},
+    return _internal_error_response(
+        status_code=int(HTTPStatus.INTERNAL_SERVER_ERROR),
+        content=HTTPStatus.INTERNAL_SERVER_ERROR.phrase,
     )
 
 
 async def validation_error_handler(_: 'Request', exc: 'Exception') -> JSONResponse:
-    """Обработчик ошибок валидации запроса.
+    """Обработчик ошибок приложения.
 
     Args:
-        exc: Исключение, ожидаемое как RequestValidationError.
+        _: Объект запроса (не используется).
+        exc: Исключение, которое должно быть экземпляром BaseAppError.
 
     Returns:
-        JSON-ответ с ошибками валидации.
+        JSON-ответ с сообщением об ошибке и HTTP-статусом.
     """
     if isinstance(exc, RequestValidationError):
         log.warning('validation_error', errors=exc.errors())
-        return JSONResponse(
-            status_code=HTTP_400_BAD_REQUEST,
-            content={'detail': exc.errors()},
-        )
+        return _internal_error_response(status_code=int(HTTPStatus.BAD_REQUEST), content=exc.errors())
 
     log.error('unexpected_validation_handler_path', exc_info=exc)
+    return _internal_error_response(
+        status_code=int(HTTPStatus.INTERNAL_SERVER_ERROR),
+        content=HTTPStatus.INTERNAL_SERVER_ERROR.phrase,
+    )
+
+
+def _internal_error_response(status_code: int, content: 'str | Sequence[dict[str, object]]') -> JSONResponse:
+    """Формирует JSON-ответ с заданным HTTP-статусом и телом ошибки.
+
+    Args:
+        status_code: HTTP-статус ответа.
+        content: Содержимое поля `detail` в теле ответа.
+
+    Returns:
+        Объект JSONResponse с заданными параметрами.
+    """
     return JSONResponse(
-        status_code=500,
-        content={'detail': 'Internal Server Error'},
+        status_code=status_code,
+        content={'detail': content},
     )
