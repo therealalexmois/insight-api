@@ -11,7 +11,7 @@ from pathlib import Path
 from socket import gethostname
 from typing import cast, Final  # noqa: TC003
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.constants import AppEnv, LogLevel
@@ -73,9 +73,9 @@ class AppSettings(BaseSettings):
         default_factory=lambda: _extract_project_field('version', _APP_PACKAGE_CONFIG_PATH) or DEFAULT_APP_VERSION,
         description='Версия приложения, полученная из pyproject.toml.',
     )
-    secret_key: str = Field(
-        default=DEFAULT_APP_SECRET_KEY,
-        description='Секретный ключ приложения, используемый, например, для подписи токенов.',
+    secret_key: SecretStr = Field(
+        default=SecretStr(DEFAULT_APP_SECRET_KEY),
+        description='Секретный ключ приложения.',
     )
     reload: bool = Field(default=DEFAULT_APP_RELOAD, description='Включать режим авто-перезагрузки.')
     debug: bool = Field(default=DEFAULT_APP_DEBUG, description='Включает режим отладки FastAPI.')

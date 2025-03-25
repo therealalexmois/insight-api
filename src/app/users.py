@@ -47,7 +47,7 @@ def create_user(user: User) -> User:
         Созданный пользователь.
     """
     user_data = user.model_dump()
-    user_data['hashed_password'] = get_password_hash(settings.app.secret_key)
+    user_data['hashed_password'] = get_password_hash(settings.app.secret_key.get_secret_value())
     internal_user = InternalUser(**user_data)
     fake_users_db[user.username] = internal_user
     return user

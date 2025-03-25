@@ -65,5 +65,5 @@ def test_settings__load_from_env(monkeypatch: pytest.MonkeyPatch) -> None:
     assert settings.app.env == AppEnv.DEV
     assert settings.app.host == '0.0.0.0'
     assert settings.app.port == test_port
-    assert settings.app.secret_key == 'supersecret'
+    assert settings.app.secret_key.get_secret_value() == 'supersecret'
     assert settings.logging.level == LogLevel.INFO

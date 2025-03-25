@@ -30,7 +30,7 @@ def init_fake_users() -> None:
 
     fake_users_db['john_doe'] = InternalUser(
         username='john_doe',
-        hashed_password=get_password_hash(settings.app.secret_key),
+        hashed_password=get_password_hash(settings.app.secret_key.get_secret_value()),
         email='john@gmail.de',
         age=25,
     )
