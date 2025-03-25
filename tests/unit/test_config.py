@@ -23,24 +23,28 @@ def sample_pyproject(tmp_path: 'Path') -> 'Path':
     return file_path
 
 
+@pytest.mark.unit
 def test_extract_project_field__returns_correct_name(sample_pyproject: 'Path') -> None:
     """Проверяет корректное извлечение поля name из pyproject.toml."""
     result = _extract_project_field('name', sample_pyproject)
     assert result == 'insight-api'
 
 
+@pytest.mark.unit
 def test_extract_project_field__returns_correct_version(sample_pyproject: 'Path') -> None:
     """Проверяет корректное извлечение поля version из pyproject.toml."""
     result = _extract_project_field('version', sample_pyproject)
     assert result == '1.2.3'
 
 
+@pytest.mark.unit
 def test_extract_project_field__raises_key_error(sample_pyproject: 'Path') -> None:
     """Проверяет, что возникает KeyError при отсутствии поля."""
     with pytest.raises(KeyError):
         _extract_project_field('description', sample_pyproject)
 
 
+@pytest.mark.unit
 def test_extract_project_field__raises_toml_error(tmp_path: 'Path') -> None:
     """Проверяет, что возникает TOMLDecodeError при неправильном синтаксисе."""
     bad_file = tmp_path / 'pyproject.toml'
@@ -50,6 +54,7 @@ def test_extract_project_field__raises_toml_error(tmp_path: 'Path') -> None:
         _extract_project_field('name', bad_file)
 
 
+@pytest.mark.unit
 def test_settings__load_from_env(monkeypatch: pytest.MonkeyPatch) -> None:
     """Проверяет, что настройки загружаются из переменных окружения."""
     monkeypatch.setenv('APP_ENV', 'dev')
