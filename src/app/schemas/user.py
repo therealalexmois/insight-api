@@ -1,14 +1,19 @@
-"""Pydantic-схемы для работы с прогнозами."""
+"""Pydantic-схемы для работы с пользователями."""
 
 from pydantic import BaseModel, EmailStr, Field
 
 
-class UserCreate(BaseModel):
-    """Схема регистрации нового пользователя."""
+class UserBase(BaseModel):
+    """Базовая схема пользователя."""
 
     username: str
     email: EmailStr
     age: int
+
+
+class UserCreate(UserBase):
+    """Схема регистрации нового пользователя с открытым паролем."""
+
     password: str = Field(min_length=8, max_length=64)
 
     model_config = {
@@ -25,12 +30,8 @@ class UserCreate(BaseModel):
     }
 
 
-class User(BaseModel):
+class User(UserBase):
     """Публичная модель пользователя, возвращаемая API."""
-
-    username: str
-    email: str
-    age: int
 
     model_config = {
         'json_schema_extra': {
@@ -45,7 +46,7 @@ class User(BaseModel):
     }
 
 
-class InternalUser(User):
+class InternalUser(UserBase):
     """Внутренняя модель пользователя, используемая при аутентификации."""
 
     hashed_password: str
