@@ -1,6 +1,6 @@
 import pytest
 
-from src.app.container import app_container
+from src.app.container import AppContainer
 from src.app.dependencies import get_user_repository
 from src.app.repositories.user_repository import UserRepository
 
@@ -11,4 +11,4 @@ def test_get_user_repository__returns_singleton_instance() -> None:
     user_repository = get_user_repository()
 
     assert isinstance(user_repository, UserRepository)
-    assert user_repository is app_container.user_repository()
+    assert user_repository is AppContainer.user_repository()

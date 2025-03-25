@@ -9,24 +9,28 @@ if TYPE_CHECKING:
     from fastapi.testclient import TestClient
 
 
+@pytest.mark.integration
 @pytest.mark.api
 class TestUsersMeEndpoint:
     @staticmethod
-    def test_read_current_user__ok(api_client: 'TestClient', test_auth: tuple[str, str]) -> None:
+    def test_read_current_user__ok(sync_api_client: 'TestClient', test_user_sync: tuple[str, str]) -> None:
         """Должен возвращать информацию о текущем аутентифицированном пользователе."""
-        response = api_client.get('/users/me', auth=test_auth)
+        response = sync_api_client.get('/users/me', auth=test_user_sync)
+        username, _ = test_user_sync
 
-        assert response.status_code == HTTPStatus.OK
-        assert response.json() == {
-            'username': 'john_doe',
-            'email': 'john@gmail.de',
-            'age': 25,
+        expected_user = {
+            'username': username,
+            'email': f'{username}@example.com',
+            'age': 30,
         }
 
+        assert response.status_code == HTTPStatus.OK
+        assert response.json() == expected_user
+
     @staticmethod
-    def test_read_current_user__unauthorized(api_client: 'TestClient') -> None:
+    def test_read_current_user__unauthorized(sync_api_client: 'TestClient') -> None:
         """Должен возвращать 401 Unauthorized, если не предоставлены учетные данные."""
-        response = api_client.get('/users/me')
+        response = sync_api_client.get('/users/me')
 
         assert response.status_code == HTTPStatus.UNAUTHORIZED
         assert response.json() == {'detail': 'Not authenticated'}
@@ -39,14 +43,15 @@ class TestUsersMeEndpoint:
             ('john_doe', 'wrong_secret'),
         ],
     )
-    def test_read_current_user__invalid_credentials(api_client: 'TestClient', auth: tuple[str, str]) -> None:
+    def test_read_current_user__invalid_credentials(sync_api_client: 'TestClient', auth: tuple[str, str]) -> None:
         """Должен возвращать 401 Unauthorized для недействительных учетных данных."""
-        response = api_client.get('/users/me', auth=auth)
+        response = sync_api_client.get('/users/me', auth=auth)
 
         assert response.status_code == HTTPStatus.UNAUTHORIZED
         assert response.json() == {'detail': 'Incorrect username or password'}
 
 
+@pytest.mark.integration
 @pytest.mark.api
 class TestPredictEndpoint:
     @staticmethod
@@ -59,13 +64,13 @@ class TestPredictEndpoint:
         ],
     )
     def test_create__ok(
-        api_client: 'TestClient',
-        test_auth: tuple[str, str],
+        sync_api_client: 'TestClient',
+        test_user_sync: tuple[str, str],
         features: dict[str, int],
         expected_prediction: str,
     ) -> None:
         """Должен возвращать правильное предсказание, основанное на возрасте."""
-        response = api_client.post('/predict/', json=features, auth=test_auth)
+        response = sync_api_client.post('/predict/', json=features, auth=test_user_sync)
 
         assert response.status_code == HTTPStatus.OK
         assert response.json() == {'prediction': expected_prediction}
