@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.schemas.user import InternalUser
+    from src.app.schemas.user import InternalUser
 
 
 class UserRepository(ABC):

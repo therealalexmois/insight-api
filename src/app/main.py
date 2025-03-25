@@ -4,13 +4,13 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
-from app.config import get_settings
-from app.exceptions import base_app_error_handler, BaseAppError, validation_error_handler
-from app.initializers.user_repository_initializer import init_fake_users
-from app.logging.logging import configure_logging
-from app.middleware.logging_middleware import logging_middleware
-from app.predict import router as predict_router
-from app.users import router as users_router
+from src.app.config import get_settings
+from src.app.exceptions import base_app_error_handler, BaseAppError, validation_error_handler
+from src.app.initializers.user_repository_initializer import init_fake_users
+from src.app.logging.logging import configure_logging
+from src.app.middleware.logging_middleware import logging_middleware
+from src.app.predict import router as predict_router
+from src.app.users import router as users_router
 
 settings = get_settings()
 

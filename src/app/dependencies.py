@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 from fastapi import Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
-from app.auth import authenticate_user
-from app.container import app_container
+from src.app.auth import authenticate_user
+from src.app.container import app_container
 
 if TYPE_CHECKING:
-    from app.repositories.user_repository import UserRepository
-    from app.schemas.user import InternalUser
+    from src.app.repositories.user_repository import UserRepository
+    from src.app.schemas.user import InternalUser
 
 security = HTTPBasic()
 credentials: HTTPBasicCredentials = Depends(security)

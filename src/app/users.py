@@ -6,14 +6,14 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Annotated
 
-    from app.repositories.user_repository import UserRepository
+    from src.app.repositories.user_repository import UserRepository
 
 from fastapi import APIRouter, Depends
 
-from app.config import get_settings
-from app.dependencies import get_current_user, get_user_repository
-from app.schemas.user import InternalUser, User, UserCreate
-from app.security import get_password_hash
+from src.app.config import get_settings
+from src.app.dependencies import get_current_user, get_user_repository
+from src.app.schemas.user import InternalUser, User, UserCreate
+from src.app.security import get_password_hash
 
 settings = get_settings()
 

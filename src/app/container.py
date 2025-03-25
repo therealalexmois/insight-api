@@ -1,6 +1,6 @@
 """Контейнер зависимостей для управления синглтонами приложения."""
 
-from app.repositories.in_memory_user_repository import InMemoryUserRepository
+from src.app.repositories.in_memory_user_repository import InMemoryUserRepository
 
 
 class AppContainer:

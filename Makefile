@@ -11,16 +11,12 @@
 	default \
 	activate
 
-PYTHONPATH := src
 PYTHON := poetry run python
 POETRY := poetry
 PRE_COMMIT := poetry run pre-commit
 RUFF := poetry run ruff
 PYTEST := poetry run pytest
 MYPY := poetry run mypy
-
-debug-pythonpath:
-	@echo "PYTHONPATH is set to: $(PYTHONPATH)"
 
 # Активировать виртуальную среду
 activate:
@@ -79,11 +75,11 @@ type-check:
 
 # Запуск тестов
 test:
-	PYTHONPATH=src $(PYTEST) -p no:cacheprovider
+	$(PYTEST) -p no:cacheprovider $(ARGS)
 
 # Запуск тестов с покрытием
 test-with-coverage:
-	PYTHONPATH=src $(PYTEST) -p no:cacheprovider --cov=src --cov-report=term-missing
+	$(PYTEST) -p no:cacheprovider --cov=src --cov-report=term-missing $(ARGS)
 
 # Установка pre-commit hooks
 install-pre-commit:
@@ -101,7 +97,7 @@ clean:
 ci-checks: lint type-check
 
 start:
-	@PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m app.main $(ARGS)
+	$(PYTHON) -m app.main $(ARGS)
 
 # Цель по умолчанию (установка зависимостей)
 default: install

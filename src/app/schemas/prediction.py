@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel
 
-from app.inference import Prediction  # noqa: TCH001
+from src.app.inference import Prediction  # noqa: TCH001
 
 
 class PredictRequest(BaseModel):

@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING
 
 from passlib.context import CryptContext
 
-from app.exceptions import InvalidCredentialsError
-from app.security import verify_password
+from src.app.exceptions import InvalidCredentialsError
+from src.app.security import verify_password
 
 if TYPE_CHECKING:
     from fastapi.security import HTTPBasicCredentials
 
-    from app.repositories.user_repository import UserRepository
-    from app.schemas.user import InternalUser
+    from src.app.repositories.user_repository import UserRepository
+    from src.app.schemas.user import InternalUser
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')

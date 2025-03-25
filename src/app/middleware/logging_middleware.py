@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import structlog
 
-from app.logging.context import bind_request_context
+from src.app.logging.context import bind_request_context
 
 if TYPE_CHECKING:
     from starlette.middleware.base import RequestResponseEndpoint

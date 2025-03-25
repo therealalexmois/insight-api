@@ -8,7 +8,7 @@ from typing import cast
 
 from passlib.context import CryptContext
 
-from app.config import get_settings
+from src.app.config import get_settings
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 

@@ -14,7 +14,7 @@ from typing import cast, Final  # noqa: TC003
 from pydantic import Field, field_validator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from app.constants import AppEnv, LogLevel
+from src.app.constants import AppEnv, LogLevel
 
 logger = logging.getLogger(__name__)
 
