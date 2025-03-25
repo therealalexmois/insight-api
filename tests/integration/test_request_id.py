@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class TestRequestIdMiddleware:
     @staticmethod
     async def test_unique_per_parallel_request(async_api_client: 'AsyncClient', test_auth: tuple[str, str]) -> None:
-        """Каждый параллельный запрос должен иметь уникальный request-id в логах и заголовках."""
+        """Проверяет, что каждый параллельный запрос имеет уникальный request-id."""
 
         async def send_request() -> str:
             response = await async_api_client.get('/users/me', auth=test_auth)
