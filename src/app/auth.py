@@ -10,9 +10,8 @@ if TYPE_CHECKING:
     from fastapi.security import HTTPBasicCredentials
 
     from app.models import InternalUser
+    from app.repositories.user_repository import UserRepository
 
-
-from app.repositories.fake_user_repo import fake_users_db
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
@@ -42,11 +41,12 @@ def get_password_hash(password: str) -> str:
     return cast('str', pwd_context.hash(password))
 
 
-def authenticate_user(credentials: 'HTTPBasicCredentials') -> 'InternalUser':
+def authenticate_user(credentials: 'HTTPBasicCredentials', user_repository: 'UserRepository') -> 'InternalUser':
     """Аутентификация пользователя с помощью учетных данных HTTP Basic.
 
     Args:
         credentials: Учетные данные HTTPBasicCredentials, содержащие имя пользователя и пароль.
+        user_repository: Репозиторий пользователей для получения данных.
 
     Returns:
         Объект InternalUser, если аутентификация прошла успешно.
@@ -54,7 +54,8 @@ def authenticate_user(credentials: 'HTTPBasicCredentials') -> 'InternalUser':
     Raises:
         HTTPException: Если имя пользователя не найдено или пароль неверен.
     """
-    user_data = fake_users_db.get(credentials.username)
+    username = credentials.username.strip().lower()
+    user_data = user_repository.get_by_username(username)
 
     if user_data is None or not verify_password(credentials.password, user_data.hashed_password):
         raise InvalidCredentialsError()
