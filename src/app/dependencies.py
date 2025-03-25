@@ -6,7 +6,7 @@ from fastapi import Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from app.auth import authenticate_user
-from app.initializers.user_repository_initializer import user_repository
+from app.container import app_container
 
 if TYPE_CHECKING:
     from app.models import InternalUser
@@ -18,7 +18,7 @@ credentials: HTTPBasicCredentials = Depends(security)
 
 def get_user_repository() -> 'UserRepository':
     """Возвращает экземпляр репозитория пользователей."""
-    return user_repository
+    return app_container.user_repository()
 
 
 user_repository_dependency = Depends(get_user_repository)
