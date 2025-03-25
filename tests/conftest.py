@@ -26,6 +26,7 @@ def api_client(fastapi_app: 'FastAPI') -> 'Generator[TestClient]':
         yield client
 
 
+# TODO: Вынести в test credentials
 DEFAULT_TEST_USERNAME = 'john_doe'
 DEFAULT_TEST_SECRET_KEY = 'dev_secret'
 
