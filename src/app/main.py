@@ -8,7 +8,7 @@ from app.auth import get_password_hash
 from app.config import get_settings
 from app.exceptions import base_app_error_handler, BaseAppError, validation_error_handler
 from app.logging.logging import configure_logging
-from app.middleware.logging_middleware import LoggingMiddleware
+from app.middleware.logging_middleware import logging_middleware
 from app.models import InternalUser
 from app.predict import router as predict_router
 from app.repositories.fake_user_repo import fake_users_db
@@ -58,7 +58,7 @@ def create_app() -> FastAPI:
     app.include_router(predict_router)
     app.add_exception_handler(BaseAppError, base_app_error_handler)
     app.add_exception_handler(RequestValidationError, validation_error_handler)
-    app.add_middleware(LoggingMiddleware)
+    app.middleware('http')(logging_middleware)
     return app
 
 

@@ -4,11 +4,12 @@ from typing import TYPE_CHECKING
 
 import pytest
 from fastapi.testclient import TestClient
+from httpx import ASGITransport, AsyncClient
 
 from src.app.main import create_app
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import AsyncGenerator, Generator
 
     from fastapi import FastAPI
 
@@ -23,6 +24,14 @@ def fastapi_app() -> 'FastAPI':
 def api_client(fastapi_app: 'FastAPI') -> 'Generator[TestClient]':
     """Предоставляет синхронный экземпляр TestClient для запросов API."""
     with TestClient(fastapi_app) as client:
+        yield client
+
+
+@pytest.fixture
+async def async_api_client() -> 'AsyncGenerator[AsyncClient]':
+    """Асинхронный клиент для отправки параллельных запросов."""
+    app = create_app()
+    async with AsyncClient(transport=ASGITransport(app=app), base_url='http://test') as client:
         yield client
 
 
