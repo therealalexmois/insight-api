@@ -33,11 +33,15 @@ def create_app() -> FastAPI:
         description=settings.app.description,
         debug=settings.app.debug,
     )
+
     app.include_router(users_router)
     app.include_router(predict_router)
+
     app.add_exception_handler(BaseAppError, base_app_error_handler)
     app.add_exception_handler(RequestValidationError, validation_error_handler)
+
     app.middleware('http')(logging_middleware)
+
     return app
 
 

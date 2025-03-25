@@ -6,19 +6,20 @@ from fastapi import Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from src.app.auth import authenticate_user
-from src.app.container import app_container
+from src.app.container import AppContainer
 
 if TYPE_CHECKING:
     from src.app.repositories.user_repository import UserRepository
     from src.app.schemas.user import InternalUser
 
 security = HTTPBasic()
+
 credentials: HTTPBasicCredentials = Depends(security)
 
 
 def get_user_repository() -> 'UserRepository':
     """Возвращает экземпляр репозитория пользователей."""
-    return app_container.user_repository()
+    return AppContainer.user_repository()
 
 
 user_repository_dependency = Depends(get_user_repository)

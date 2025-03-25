@@ -3,11 +3,6 @@
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from typing import Annotated
-
-    from src.app.repositories.user_repository import UserRepository
-
 from fastapi import APIRouter, Depends
 
 from src.app.config import get_settings
@@ -15,17 +10,19 @@ from src.app.dependencies import get_current_user, get_user_repository
 from src.app.schemas.user import InternalUser, User, UserCreate
 from src.app.security import get_password_hash
 
+if TYPE_CHECKING:
+    from src.app.repositories.user_repository import UserRepository
+
 settings = get_settings()
 
 router = APIRouter()
 
 current_user_dependency = Depends(get_current_user)
+user_repository_dependency = Depends(get_user_repository)
 
 
 @router.get('/users/me', response_model=User, status_code=HTTPStatus.OK, summary='read_current_user')
-def read_current_user(
-    current_user: 'Annotated[InternalUser, Depends(get_current_user)]' = current_user_dependency,
-) -> User:
+def read_current_user(current_user: InternalUser = current_user_dependency) -> User:
     """Возвращает данные текущего аутентифицированного пользователя.
 
     Args:
@@ -38,9 +35,7 @@ def read_current_user(
 
 
 @router.post('/users/', response_model=User, status_code=HTTPStatus.CREATED, summary='create_user')
-def create_user(
-    user_data: UserCreate, user_repository: 'Annotated[UserRepository, Depends(get_user_repository)]'
-) -> User:
+def create_user(user_data: UserCreate, user_repository: 'UserRepository' = user_repository_dependency) -> User:
     """Создает нового пользователя и сохраняет его в репозиторий.
 
     Получает модель пользователя, хэширует пароль,

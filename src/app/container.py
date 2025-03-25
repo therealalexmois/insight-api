@@ -14,6 +14,3 @@ class AppContainer:
         if cls._user_repository is None:
             cls._user_repository = InMemoryUserRepository()
         return cls._user_repository
-
-
-app_container = AppContainer()

@@ -1,13 +1,13 @@
 """Инициализирует репозиторий пользователей с тестовыми данными."""
 
-from src.app.container import app_container
+from src.app.container import AppContainer
 from src.app.schemas.user import InternalUser
 from src.app.security import get_password_hash
 
 
 def init_fake_users() -> None:
     """Создает пользователей для разработки и тестов."""
-    user_repository = app_container.user_repository()
+    user_repository = AppContainer.user_repository()
 
     user = InternalUser(
         username='john_doe',
