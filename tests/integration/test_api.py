@@ -1,5 +1,6 @@
 """Интеграционные тесты для API."""
 
+from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 import pytest
@@ -9,7 +10,45 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.api
-class TestPredict:
+class TestUsersMeEndpoint:
+    @staticmethod
+    def test_read_current_user__ok(api_client: 'TestClient', test_auth: tuple[str, str]) -> None:
+        """Должен возвращать информацию о текущем аутентифицированном пользователе."""
+        response = api_client.get('/users/me', auth=test_auth)
+
+        assert response.status_code == HTTPStatus.OK
+        assert response.json() == {
+            'username': 'john_doe',
+            'email': 'john@gmail.de',
+            'age': 25,
+        }
+
+    @staticmethod
+    def test_read_current_user__unauthorized(api_client: 'TestClient') -> None:
+        """Должен возвращать 401 Unauthorized, если не предоставлены учетные данные."""
+        response = api_client.get('/users/me')
+
+        assert response.status_code == HTTPStatus.UNAUTHORIZED
+        assert response.json() == {'detail': 'Not authenticated'}
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        'auth',
+        [
+            ('invalid_user', 'dev_secret'),
+            ('john_doe', 'wrong_secret'),
+        ],
+    )
+    def test_read_current_user__invalid_credentials(api_client: 'TestClient', auth: tuple[str, str]) -> None:
+        """Должен возвращать 401 Unauthorized для недействительных учетных данных."""
+        response = api_client.get('/users/me', auth=auth)
+
+        assert response.status_code == HTTPStatus.UNAUTHORIZED
+        assert response.json() == {'detail': 'Incorrect username or password'}
+
+
+@pytest.mark.api
+class TestPredictEndpoint:
     @staticmethod
     @pytest.mark.parametrize(
         'features,expected_prediction',
@@ -19,49 +58,14 @@ class TestPredict:
             ({'age': 30}, 'negative'),
         ],
     )
-    async def test_predict__returns_expected_prediction(
+    def test_create__ok(
         api_client: 'TestClient',
         test_auth: tuple[str, str],
         features: dict[str, int],
         expected_prediction: str,
     ) -> None:
-        """Тест на корректное предсказание модели в зависимости от возраста."""
-        response = api_client.post(
-            '/predict/',
-            json=features,
-            auth=test_auth,
-        )
+        """Должен возвращать правильное предсказание, основанное на возрасте."""
+        response = api_client.post('/predict/', json=features, auth=test_auth)
 
-        expected_status_code = 200
-
-        assert response.status_code == expected_status_code
+        assert response.status_code == HTTPStatus.OK
         assert response.json() == {'prediction': expected_prediction}
-
-
-@pytest.mark.api
-class TestUsers:
-    @staticmethod
-    def test_users_me__returns_current_user(
-        api_client: 'TestClient',
-        test_auth: tuple[str, str],
-    ) -> None:
-        """Проверяет возврат правильного аутентифицированного пользователя."""
-        response = api_client.get('/users/me', auth=test_auth)
-
-        expected_status_code = 200
-        expected_age = 25
-
-        assert response.status_code == expected_status_code
-        data = response.json()
-        assert data['username'] == 'john_doe'
-        assert data['email'] == 'john@gmail.de'
-        assert data['age'] == expected_age
-
-    @staticmethod
-    def test_users_me__unauthorized_without_credentials(api_client: 'TestClient') -> None:
-        """Ensure /users/me returns 401 Unauthorized without credentials."""
-        response = api_client.get('/users/me')
-
-        epected_status_code = 401
-
-        assert response.status_code == epected_status_code

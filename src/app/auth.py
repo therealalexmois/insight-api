@@ -4,7 +4,7 @@ from typing import cast, TYPE_CHECKING
 
 from passlib.context import CryptContext
 
-from app.exceptions import InvalidCredentialsError, UserNotFoundError
+from app.exceptions import InvalidCredentialsError
 
 if TYPE_CHECKING:
     from fastapi.security import HTTPBasicCredentials
@@ -56,10 +56,7 @@ def authenticate_user(credentials: 'HTTPBasicCredentials') -> 'InternalUser':
     """
     user_data = fake_users_db.get(credentials.username)
 
-    if user_data is None:
-        raise UserNotFoundError()
-
-    if not verify_password(credentials.password, user_data.hashed_password):
+    if user_data is None or not verify_password(credentials.password, user_data.hashed_password):
         raise InvalidCredentialsError()
 
     return user_data
