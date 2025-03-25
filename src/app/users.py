@@ -12,7 +12,7 @@ from fastapi import APIRouter, Depends
 
 from app.config import get_settings
 from app.dependencies import get_current_user, get_user_repository
-from app.models import InternalUser, User
+from app.schemas.user import InternalUser, User, UserCreate
 from app.security import get_password_hash
 
 settings = get_settings()
@@ -29,7 +29,7 @@ def read_current_user(
     """Возвращает данные текущего аутентифицированного пользователя.
 
     Args:
-        current_user: Полученный через Depends пользователь.
+        current_user: Текущий пользователь.
 
     Returns:
         Модель пользователя без пароля.
@@ -38,21 +38,28 @@ def read_current_user(
 
 
 @router.post('/users/', response_model=User, status_code=HTTPStatus.CREATED, summary='create_user')
-def create_user(user: User, user_repository: 'Annotated[UserRepository, Depends(get_user_repository)]') -> User:
+def create_user(
+    user_data: UserCreate, user_repository: 'Annotated[UserRepository, Depends(get_user_repository)]'
+) -> User:
     """Создает нового пользователя и сохраняет его в репозиторий.
 
-    Получает модель пользователя без пароля, хэширует пароль,
+    Получает модель пользователя, хэширует пароль,
     преобразует в InternalUser и сохраняет в репозиторий пользователей.
 
     Args:
-        user: Модель пользователя без пароля.
-        user_repository: Репозиторий пользователей, полученный через Depends.
+        user_data: Данные о пользователя.
+        user_repository: Репозиторий пользователей.
 
     Returns:
         Созданный пользователь.
     """
-    user_data = user.model_dump()
-    user_data['hashed_password'] = get_password_hash(settings.app.secret_key.get_secret_value())
-    internal_user = InternalUser(**user_data)
+    internal_user = InternalUser(
+        username=user_data.username,
+        email=user_data.email,
+        age=user_data.age,
+        hashed_password=get_password_hash(user_data.password),
+    )
+
     user_repository.add(internal_user)
-    return user
+
+    return User(**internal_user.model_dump())

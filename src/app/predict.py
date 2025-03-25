@@ -5,7 +5,7 @@ from http import HTTPStatus
 from fastapi import APIRouter
 
 from app.inference import predict_from_features
-from app.models import PredictRequest, PredictResponse
+from app.schemas.prediction import PredictRequest, PredictResponse
 
 router = APIRouter()
 

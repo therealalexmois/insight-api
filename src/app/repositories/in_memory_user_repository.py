@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from app.repositories.user_repository import UserRepository
 
 if TYPE_CHECKING:
-    from app.models import InternalUser
+    from app.schemas.user import InternalUser
 
 
 class InMemoryUserRepository(UserRepository):

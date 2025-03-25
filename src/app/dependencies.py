@@ -9,8 +9,8 @@ from app.auth import authenticate_user
 from app.container import app_container
 
 if TYPE_CHECKING:
-    from app.models import InternalUser
     from app.repositories.user_repository import UserRepository
+    from app.schemas.user import InternalUser
 
 security = HTTPBasic()
 credentials: HTTPBasicCredentials = Depends(security)

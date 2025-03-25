@@ -10,8 +10,8 @@ from app.security import verify_password
 if TYPE_CHECKING:
     from fastapi.security import HTTPBasicCredentials
 
-    from app.models import InternalUser
     from app.repositories.user_repository import UserRepository
+    from app.schemas.user import InternalUser
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
