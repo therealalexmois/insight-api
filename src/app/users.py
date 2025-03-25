@@ -10,10 +10,10 @@ if TYPE_CHECKING:
 
 from fastapi import APIRouter, Depends
 
-from app.auth import get_password_hash
 from app.config import get_settings
 from app.dependencies import get_current_user, get_user_repository
 from app.models import InternalUser, User
+from app.security import get_password_hash
 
 settings = get_settings()
 

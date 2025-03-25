@@ -1,9 +1,9 @@
 """Инициализирует репозиторий пользователей с тестовыми данными."""
 
-from app.auth import get_password_hash
 from app.config import get_settings
 from app.models import InternalUser
 from app.repositories.in_memory_user_repository import InMemoryUserRepository
+from app.security import get_password_hash
 
 user_repository = InMemoryUserRepository()
 

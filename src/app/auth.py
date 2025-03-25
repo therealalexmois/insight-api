@@ -1,10 +1,11 @@
 """Логика аутентификации для хэширования паролей и проверки пользователей."""
 
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from passlib.context import CryptContext
 
 from app.exceptions import InvalidCredentialsError
+from app.security import verify_password
 
 if TYPE_CHECKING:
     from fastapi.security import HTTPBasicCredentials
@@ -14,31 +15,6 @@ if TYPE_CHECKING:
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Проверка пароля на его хэшированный аналог.
-
-    Args:
-        plain_password: Необработанный пароль, предоставленный пользователем.
-        hashed_password: Хешированный пароль, хранящийся в базе данных.
-
-    Returns:
-        True, если пароль действителен, False - в противном случае.
-    """
-    return cast('bool', pwd_context.verify(plain_password, hashed_password))
-
-
-def get_password_hash(password: str) -> str:
-    """Хеширование пароля с помощью bcrypt.
-
-    Args:
-        password: Необработанный пароль, предоставленный пользователем.
-
-    Returns:
-        Хешированная строка пароля.
-    """
-    return cast('str', pwd_context.hash(password))
 
 
 def authenticate_user(credentials: 'HTTPBasicCredentials', user_repository: 'UserRepository') -> 'InternalUser':
