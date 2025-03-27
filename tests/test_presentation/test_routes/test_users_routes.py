@@ -83,7 +83,7 @@ class TestCreateUserEndpoint:
 
         response = sync_api_client.post('/users', json=bad_data)
 
-        assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+        assert response.status_code == HTTPStatus.BAD_REQUEST
 
     @staticmethod
     def test_create_user__short_password(sync_api_client: 'TestClient') -> None:
@@ -97,7 +97,7 @@ class TestCreateUserEndpoint:
 
         response = sync_api_client.post('/users', json=bad_data)
 
-        assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+        assert response.status_code == HTTPStatus.BAD_REQUEST
 
     @staticmethod
     def test_create_user__duplicate_username(sync_api_client: 'TestClient') -> None:

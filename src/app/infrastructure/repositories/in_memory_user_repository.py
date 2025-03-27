@@ -20,8 +20,14 @@ class InMemoryUserRepository(UserRepository):
 
         Args:
             user: Пользователь для добавления.
+
+        Raises:
+            ValueError: Если пользователь с таким же именем уже существует.
         """
-        self._users[user.username.lower()] = user
+        key = user.username.lower()
+        if key in self._users:
+            raise ValueError(f'User with username "{user.username}" already exists.')
+        self._users[key] = user
 
     def get_by_username(self, username: str) -> 'InternalUser | None':
         """Возвращает пользователя по имени без учета регистра.
