@@ -5,9 +5,9 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
 from src.app.domain.exceptions import BaseAppError
+from src.app.infrastructure.config import get_settings
 from src.app.infrastructure.initializers.user_repository_initializer import init_fake_users
 from src.app.infrastructure.logger.logging import configure_logging
-from src.app.presentation.config import get_settings
 from src.app.presentation.exceptions import base_app_error_handler, validation_error_handler
 from src.app.presentation.middlewares.request_id import request_id_middleware
 from src.app.presentation.middlewares.request_logging import request_logging_middleware

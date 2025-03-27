@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 from fastapi import APIRouter, Depends
 
 from src.app.domain.models.user import InternalUser
+from src.app.infrastructure.config import get_settings
 from src.app.infrastructure.container import AppContainer
-from src.app.presentation.config import get_settings
 from src.app.presentation.dependencies import get_current_user, get_user_repository
 from src.app.presentation.schemas.user import UserCreate, UserResponse
 
