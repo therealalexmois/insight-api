@@ -2,29 +2,31 @@
 
 import uuid
 from contextvars import ContextVar
-from typing import TYPE_CHECKING
+from typing import Final, TYPE_CHECKING
 
 import structlog
 
 if TYPE_CHECKING:
     from fastapi import Request
 
-logger = structlog.get_logger()
-
-
 request_id_ctx: ContextVar[str | None] = ContextVar('request_id', default=None)
 
 
-def bind_request_context(request: 'Request') -> str:
-    """Извлекает или создает X-Request-ID и добавляет контекст запроса в structlog.
+DEFAULT_REQUEST_ID_HEADER: Final[str] = 'X-Request-ID'
+
+
+def extract_request_id(request: 'Request') -> str:
+    """Извлекает X-Request-ID или генерирует новый."""
+    return request.headers.get(DEFAULT_REQUEST_ID_HEADER) or _default_generator()
+
+
+def bind_logging_context(request_id: str, request: 'Request') -> None:
+    """Добавляет X-Request-ID в контекст запроса structlog.
 
     Args:
+        request_id: Идентификатор запроса.
         request: Объект запроса.
-
-    Returns:
-        Уникальный идентификатор запроса (request_id).
     """
-    request_id = request.headers.get('X-Request-ID') or _default_generator()
     request_id_ctx.set(request_id)
 
     structlog.contextvars.clear_contextvars()
@@ -33,7 +35,6 @@ def bind_request_context(request: 'Request') -> str:
         method=request.method,
         path=request.url.path,
     )
-    return request_id
 
 
 def get_request_id() -> str | None:
@@ -42,5 +43,5 @@ def get_request_id() -> str | None:
 
 
 def _default_generator() -> str:
-    """ФОрмирует уникальный идентификатор."""
+    """Формирует уникальный идентификатор."""
     return str(uuid.uuid4())

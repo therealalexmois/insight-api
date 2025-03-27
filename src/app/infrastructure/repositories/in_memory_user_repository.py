@@ -2,10 +2,10 @@
 
 from typing import TYPE_CHECKING
 
-from src.app.repositories.user_repository import UserRepository
+from src.app.domain.repositories.user_repository import UserRepository
 
 if TYPE_CHECKING:
-    from src.app.schemas.user import InternalUser
+    from src.app.domain.models.user import InternalUser
 
 
 class InMemoryUserRepository(UserRepository):

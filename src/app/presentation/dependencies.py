@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 from fastapi import Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
-from src.app.auth import authenticate_user
-from src.app.container import AppContainer
+from src.app.application.services.auth_service import authenticate_user
+from src.app.infrastructure.container import AppContainer
 
 if TYPE_CHECKING:
-    from src.app.repositories.user_repository import UserRepository
-    from src.app.schemas.user import InternalUser
+    from src.app.domain.models.user import InternalUser
+    from src.app.domain.repositories.user_repository import UserRepository
 
 security = HTTPBasic()
 
@@ -37,4 +37,4 @@ def get_current_user(
     Returns:
         Внутренняя модель пользователя, если аутентификация прошла успешно.
     """
-    return authenticate_user(credentials, user_repository)
+    return authenticate_user(credentials.username, credentials.password, user_repository)

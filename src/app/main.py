@@ -4,13 +4,15 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
-from src.app.config import get_settings
-from src.app.exceptions import base_app_error_handler, BaseAppError, validation_error_handler
-from src.app.initializers.user_repository_initializer import init_fake_users
-from src.app.logging.logging import configure_logging
-from src.app.middleware.logging_middleware import logging_middleware
-from src.app.predict import router as predict_router
-from src.app.users import router as users_router
+from src.app.domain.exceptions import BaseAppError
+from src.app.infrastructure.initializers.user_repository_initializer import init_fake_users
+from src.app.infrastructure.logger.logging import configure_logging
+from src.app.presentation.config import get_settings
+from src.app.presentation.exceptions import base_app_error_handler, validation_error_handler
+from src.app.presentation.middleware.request_id import request_id_middleware
+from src.app.presentation.middleware.request_logging import request_logging_middleware
+from src.app.presentation.routes.predictions import router as predict_router
+from src.app.presentation.routes.users import router as users_router
 
 settings = get_settings()
 
@@ -40,7 +42,8 @@ def create_app() -> FastAPI:
     app.add_exception_handler(BaseAppError, base_app_error_handler)
     app.add_exception_handler(RequestValidationError, validation_error_handler)
 
-    app.middleware('http')(logging_middleware)
+    app.middleware('http')(request_id_middleware)
+    app.middleware('http')(request_logging_middleware)
 
     return app
 
