@@ -1,5 +1,6 @@
 """Маршруты, связанные с пользователями."""
 
+from dataclasses import asdict
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
@@ -59,4 +60,4 @@ def create_user(user_data: UserCreate, user_repository: 'UserRepository' = user_
 
     user_repository.add(internal_user)
 
-    return UserResponse.model_validate(internal_user)
+    return UserResponse(**asdict(internal_user))

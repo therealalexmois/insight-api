@@ -10,8 +10,7 @@ if TYPE_CHECKING:
 @pytest.mark.critical
 @pytest.mark.asyncio
 class TestMain:
-    @staticmethod
-    async def test_app_startup__returns_200(async_api_client: 'AsyncClient') -> None:
+    async def test_app_startup__returns_200(self, async_api_client: 'AsyncClient') -> None:
         """Критический тест: приложение должно успешно запускаться и обрабатывать запросы."""
         response = await async_api_client.get('/users/me', auth=('invalid', 'invalid'))
 
