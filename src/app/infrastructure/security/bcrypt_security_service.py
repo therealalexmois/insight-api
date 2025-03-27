@@ -6,7 +6,7 @@ from typing import cast
 from passlib.context import CryptContext
 
 from src.app.application.ports.security import SecurityService
-from src.app.presentation.config import get_settings
+from src.app.infrastructure.config import get_settings
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
