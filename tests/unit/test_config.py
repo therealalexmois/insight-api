@@ -6,8 +6,8 @@ if TYPE_CHECKING:
 
 import pytest
 
-from src.app.config import _extract_project_field, Settings
-from src.app.constants import AppEnv, LogLevel
+from src.app.domain.constants import AppEnv, LogLevel
+from src.app.presentation.config import _extract_project_field, Settings
 
 
 @pytest.fixture

@@ -1,8 +1,8 @@
 import pytest
 
-from src.app.container import AppContainer
-from src.app.dependencies import get_user_repository
-from src.app.repositories.user_repository import UserRepository
+from src.app.domain.repositories.user_repository import UserRepository
+from src.app.infrastructure.container import AppContainer
+from src.app.presentation.dependencies import get_user_repository
 
 
 @pytest.mark.unit
