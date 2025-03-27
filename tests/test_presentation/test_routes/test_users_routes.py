@@ -35,14 +35,15 @@ class TestUsersMeEndpoint:
 
     @pytest.mark.parametrize(
         'auth',
-        [('invalid_user', 'dev_secret'), ('john_doe', 'wrong_secret')],
+        [
+            ('invalid_user', 'dev_secret'),
+            ('john_doe', 'wrong_secret'),
+        ],
     )
     @staticmethod
-    def test_read_current_user__invalid_credentials(
-        sync_api_client: 'TestClient', test_user_sync: tuple[str, str]
-    ) -> None:
+    def test_read_current_user__invalid_credentials(sync_api_client: 'TestClient') -> None:
         """Должен возвращать 401 Unauthorized для недействительных учетных данных."""
-        response = sync_api_client.get('/users/me', auth=test_user_sync)
+        response = sync_api_client.get('/users/me', auth=('invalid', 'invalid'))
 
         assert response.status_code == HTTPStatus.UNAUTHORIZED
         assert response.json() == {'detail': 'Incorrect username or password'}
