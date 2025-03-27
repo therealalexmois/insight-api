@@ -102,8 +102,9 @@ class TestCreateUserEndpoint:
     @staticmethod
     def test_create_user__duplicate_username(sync_api_client: 'TestClient') -> None:
         """Должен вернуть 409, если пользователь уже существует."""
+        username = 'duplicate_user'
         user_data = {
-            'username': 'duplicate_user',
+            'username': username,
             'email': 'dupe@example.com',
             'age': 30,
             'password': 'securepassword123',
@@ -114,4 +115,4 @@ class TestCreateUserEndpoint:
 
         second_response = sync_api_client.post('/users', json=user_data)
         assert second_response.status_code == HTTPStatus.CONFLICT
-        assert second_response.json()['detail'] == 'User already exists'
+        assert second_response.json()['detail'] == f'User "{username}" already exists'
