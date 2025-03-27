@@ -33,7 +33,7 @@ def read_current_user(current_user: InternalUser = current_user_dependency) -> U
     Returns:
         Модель пользователя без пароля.
     """
-    return UserResponse.model_validate(current_user)
+    return UserResponse.model_validate(current_user, from_attributes=True)
 
 
 @router.post('/users', status_code=HTTPStatus.CREATED, summary='create_user')
