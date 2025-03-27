@@ -10,13 +10,13 @@ def init_fake_users() -> None:
     Добавляет в репозиторий фиктивного пользователя с захардкоженными данными.
     """
     user_repository = AppContainer.user_repository()
-    password_hasher = AppContainer.security_service()
+    security_service = AppContainer.security_service()
 
     user = InternalUser(
         username='john_doe',
         email='john@gmail.de',
         age=25,
-        hashed_password=password_hasher.hash('test1234'),
+        hashed_password=security_service.hash('test1234'),
     )
 
     user_repository.add(user)
