@@ -46,3 +46,71 @@ class TestUsersMeEndpoint:
 
         assert response.status_code == HTTPStatus.UNAUTHORIZED
         assert response.json() == {'detail': 'Incorrect username or password'}
+
+
+@pytest.mark.integration
+@pytest.mark.api
+class TestCreateUserEndpoint:
+    @staticmethod
+    def test_create_user__ok(sync_api_client: 'TestClient') -> None:
+        """Должен успешно создать нового пользователя и вернуть 201."""
+        user_data = {
+            'username': 'new_user',
+            'email': 'new_user@example.com',
+            'age': 28,
+            'password': 'secure12345',
+        }
+
+        response = sync_api_client.post('/users', json=user_data)
+
+        assert response.status_code == HTTPStatus.CREATED
+        assert response.json() == {
+            'username': user_data['username'],
+            'email': user_data['email'],
+            'age': user_data['age'],
+        }
+
+    @staticmethod
+    def test_create_user__invalid_email(sync_api_client: 'TestClient') -> None:
+        """Должен вернуть 422, если email некорректный."""
+        bad_data = {
+            'username': 'new_user',
+            'email': 'not-an-email',
+            'age': 28,
+            'password': 'secure12345',
+        }
+
+        response = sync_api_client.post('/users', json=bad_data)
+
+        assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+
+    @staticmethod
+    def test_create_user__short_password(sync_api_client: 'TestClient') -> None:
+        """Должен вернуть 422, если пароль слишком короткий."""
+        bad_data = {
+            'username': 'short_pass_user',
+            'email': 'short@pass.com',
+            'age': 22,
+            'password': '123',
+        }
+
+        response = sync_api_client.post('/users', json=bad_data)
+
+        assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+
+    @staticmethod
+    def test_create_user__duplicate_username(sync_api_client: 'TestClient') -> None:
+        """Должен вернуть 409, если пользователь уже существует."""
+        user_data = {
+            'username': 'duplicate_user',
+            'email': 'dupe@example.com',
+            'age': 30,
+            'password': 'securepassword123',
+        }
+
+        first_response = sync_api_client.post('/users', json=user_data)
+        assert first_response.status_code == HTTPStatus.CREATED
+
+        second_response = sync_api_client.post('/users', json=user_data)
+        assert second_response.status_code == HTTPStatus.CONFLICT
+        assert second_response.json()['detail'] == 'User already exists'
