@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from src.app.domain.exceptions import UserAlreadyExistsError
 from src.app.domain.repositories.user_repository import UserRepository
 
 if TYPE_CHECKING:
@@ -26,7 +27,7 @@ class InMemoryUserRepository(UserRepository):
         """
         key = user.username.lower()
         if key in self._users:
-            raise ValueError(f'User with username "{user.username}" already exists.')
+            raise UserAlreadyExistsError(username=user.username)
         self._users[key] = user
 
     def get_by_username(self, username: str) -> 'InternalUser | None':

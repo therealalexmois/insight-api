@@ -20,9 +20,13 @@ class BaseAppError(Exception):
 class UserAlreadyExistsError(BaseAppError):
     """Ошибка: пользователь с таким именем уже существует."""
 
-    def __init__(self) -> None:
-        """Ошибка конфликта при создании пользователя (HTTP 409)."""
-        super().__init__('User already exists', status_code=HTTPStatus.CONFLICT)
+    def __init__(self, username: str) -> None:
+        """Ошибка конфликта при создании пользователя (HTTP 409).
+
+        Args:
+            username: Имя пользователя, вызвавшего ошибку.
+        """
+        super().__init__(f'User "{username}" already exists', status_code=HTTPStatus.CONFLICT)
 
 
 class UserNotFoundError(BaseAppError):
