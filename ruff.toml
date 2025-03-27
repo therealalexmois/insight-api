@@ -67,6 +67,7 @@ select = [
     "PL",    # pylint rules
     "N",     # pep8-naming
     "C90",   # mccabe complexity
+    "FAST",  # fastapi
 ]
 
 # Отключение конфликтующих правил
