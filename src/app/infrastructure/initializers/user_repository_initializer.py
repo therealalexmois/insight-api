@@ -12,11 +12,13 @@ def init_fake_users() -> None:
     user_repository = AppContainer.user_repository()
     security_service = AppContainer.security_service()
 
-    user = InternalUser(
-        username='john_doe',
-        email='john@gmail.de',
-        age=25,
-        hashed_password=security_service.hash('test1234'),
-    )
+    username = 'john_doe'
 
-    user_repository.add(user)
+    if user_repository.get_by_username(username) is None:
+        user = InternalUser(
+            username=username,
+            email='john@gmail.de',
+            age=25,
+            hashed_password=security_service.hash('qwerty123'),
+        )
+        user_repository.add(user)
