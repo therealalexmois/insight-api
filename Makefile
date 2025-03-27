@@ -97,7 +97,7 @@ clean:
 ci-checks: lint type-check
 
 start:
-	$(PYTHON) -m app.main $(ARGS)
+	$(PYTHON) -m src.app.main $(ARGS)
 
 # Цель по умолчанию (установка зависимостей)
 default: install
