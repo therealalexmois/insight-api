@@ -21,7 +21,6 @@ class AppContainer:
 
     _user_repository: 'UserRepository | None' = None
     _security_service: 'SecurityService' = BcryptSecurityService()
-    _logger: 'Logger' = StructlogLogger(name=LOGGER_NAME)
 
     @classmethod
     def user_repository(cls) -> 'UserRepository':
@@ -50,4 +49,4 @@ class AppContainer:
         Returns:
             Экземпляр Logger.
         """
-        return cls._logger
+        return StructlogLogger(name=LOGGER_NAME)
