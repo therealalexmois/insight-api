@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from src.app.infrastructure.logger.context import bind_logging_context, DEFAULT_REQUEST_ID_HEADER, extract_request_id
+from src.app.infrastructure.logger.context import DEFAULT_REQUEST_ID_HEADER, extract_request_id, set_request_id
 
 if TYPE_CHECKING:
     from starlette.middleware.base import RequestResponseEndpoint
@@ -21,7 +21,7 @@ async def request_id_middleware(request: 'Request', call_next: 'RequestResponseE
         HTTP-ответ с заголовком X-Request-ID.
     """
     request_id = extract_request_id(request)
-    bind_logging_context(request_id, request)
+    request_id = set_request_id(request_id)
 
     response = await call_next(request)
     response.headers[DEFAULT_REQUEST_ID_HEADER] = request_id

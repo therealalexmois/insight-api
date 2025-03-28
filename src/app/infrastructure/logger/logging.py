@@ -65,7 +65,7 @@ def configure_logging(  # noqa: PLR0913
 
     def serializer(*args: 'Any', **kwargs: 'Any') -> str:
         """Сериализует словарь события в строку JSON."""
-        return cast('str', orjson.dumps(*args, **kwargs).decode('utf-8'))
+        return orjson.dumps(*args, **kwargs).decode('utf-8')
 
     sys.excepthook = handle_exception
 
@@ -91,7 +91,10 @@ def configure_logging(  # noqa: PLR0913
 
     formatter = ProcessorFormatter(
         foreign_pre_chain=shared_processors,
-        processors=[ProcessorFormatter.remove_processors_meta, JSONRenderer(serializer=serializer)],
+        processors=[
+            ProcessorFormatter.remove_processors_meta,
+            JSONRenderer(serializer=serializer),
+        ],
     )
 
     handler: logging.Handler = logging.StreamHandler()

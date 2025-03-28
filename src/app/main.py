@@ -52,8 +52,8 @@ def create_app() -> FastAPI:
     app.add_exception_handler(BaseAppError, base_app_error_handler)
     app.add_exception_handler(RequestValidationError, validation_error_handler)
 
-    app.middleware('http')(request_id_middleware)
     app.middleware('http')(request_logging_middleware)
+    app.middleware('http')(request_id_middleware)
 
     return app
 

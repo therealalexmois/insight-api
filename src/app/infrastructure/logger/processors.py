@@ -3,6 +3,8 @@
 from datetime import datetime, UTC
 from typing import TYPE_CHECKING
 
+from structlog.processors import ExceptionRenderer
+
 from src.app.domain.constants import LogAttrName
 from src.app.infrastructure.logger.context import get_request_id
 
@@ -21,11 +23,13 @@ class UvicornColorMessageDropper:
         return event_dict
 
 
-class ExceptionInfoAttrRenamer:
+class ExceptionInfoAttrRenamer(ExceptionRenderer):
     """Добавление информации об исключении в запись лога."""
 
-    def __call__(self, _: 'WrappedLogger', __: str, event_dict: 'EventDict') -> 'EventDict':
+    def __call__(self, logger: 'WrappedLogger', name: str, event_dict: 'EventDict') -> 'EventDict':
         """Вызов обработчика."""
+        event_dict = super().__call__(logger, name, event_dict)
+
         if exc_info := event_dict.pop('exception', None):
             event_dict[LogAttrName.ERROR.value] = exc_info
         return event_dict
@@ -56,6 +60,7 @@ class RequestIdAdder:
     def __call__(self, _: 'WrappedLogger', __: str, event_dict: 'EventDict') -> 'EventDict':
         """Вызов обработчика."""
         request_id = get_request_id()
+
         if request_id:
             event_dict[LogAttrName.REQUEST_ID.value] = request_id
 
