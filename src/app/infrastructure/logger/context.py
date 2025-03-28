@@ -9,7 +9,7 @@ import structlog
 if TYPE_CHECKING:
     from fastapi import Request
 
-request_id_ctx: ContextVar[str | None] = ContextVar('request_id', default=None)
+_request_id_ctx: ContextVar[str | None] = ContextVar('request_id', default=None)
 
 
 DEFAULT_REQUEST_ID_HEADER: Final[str] = 'X-Request-ID'
@@ -20,26 +20,28 @@ def extract_request_id(request: 'Request') -> str:
     return request.headers.get(DEFAULT_REQUEST_ID_HEADER) or _default_generator()
 
 
-def bind_logging_context(request_id: str, request: 'Request') -> None:
-    """Добавляет X-Request-ID в контекст запроса structlog.
+def bind_logging_context(request_id: str, request: 'Request', username: str | None = None) -> None:
+    """Привязывает контекст запроса к structlog.
 
     Args:
         request_id: Идентификатор запроса.
-        request: Объект запроса.
+        request: FastAPI-запрос.
+        username: Опциональное имя пользователя.
     """
-    request_id_ctx.set(request_id)
+    _request_id_ctx.set(request_id)
 
     structlog.contextvars.clear_contextvars()
     structlog.contextvars.bind_contextvars(
         request_id=request_id,
         method=request.method,
         path=request.url.path,
+        username=username if username else None,
     )
 
 
 def get_request_id() -> str | None:
     """Возвращает значение идентификатора запроса."""
-    return request_id_ctx.get()
+    return _request_id_ctx.get()
 
 
 def _default_generator() -> str:

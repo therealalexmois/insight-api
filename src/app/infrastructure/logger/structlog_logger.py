@@ -8,9 +8,13 @@ from src.app.application.ports.logger import Logger
 class StructlogLogger(Logger):
     """Логгер, реализующий интерфейс Logger через structlog."""
 
-    def __init__(self) -> None:
-        """Инициализирует экземпляр structlog логгера."""
-        self._logger = structlog.get_logger()
+    def __init__(self, name: str) -> None:
+        """Инициализирует экземпляр structlog логгера.
+
+        Args:
+            name: Имя логгера.
+        """
+        self._logger = structlog.get_logger(name)
 
     def info(self, event: str, **kwargs: object) -> None:
         """Логгирует информационное сообщение.
