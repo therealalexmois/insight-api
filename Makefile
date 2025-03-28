@@ -71,7 +71,7 @@ lint-and-format: lint-fix lint-format
 
 # Запуск проверки типов
 type-check:
-	@$(MYPY) .
+	@$(MYPY) --config-file=pyproject.toml --no-incremental src tests
 
 # Запуск тестов
 test:
