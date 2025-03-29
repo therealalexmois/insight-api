@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 
 from fastapi import Depends
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.security import HTTPBasic, HTTPBasicCredentials, OAuth2PasswordBearer
 
 from src.app.application.services.auth_service import authenticate_user
 from src.app.infrastructure.container import AppContainer
@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from src.app.domain.repositories.user_repository import UserRepository
 
 security = HTTPBasic()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/v1/auth/token')
 
 credentials: HTTPBasicCredentials = Depends(security)
 
