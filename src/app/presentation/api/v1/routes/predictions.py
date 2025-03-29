@@ -10,7 +10,7 @@ from src.app.presentation.schemas.prediction import PredictRequest, PredictRespo
 router = APIRouter()
 
 
-@router.post('/predictions', status_code=HTTPStatus.OK, summary='predict')
+@router.post('predictions', status_code=HTTPStatus.OK, summary='predict')
 def predict(request: PredictRequest) -> PredictResponse:
     """Возвращает предсказание модели на основе входных признаков.
 

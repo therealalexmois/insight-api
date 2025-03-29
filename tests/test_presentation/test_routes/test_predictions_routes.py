@@ -26,7 +26,7 @@ class TestPredictEndpoint:
         expected_prediction: str,
     ) -> None:
         """Должен возвращать правильное предсказание, основанное на возрасте."""
-        response = sync_api_client.post('/predictions', json=features, auth=test_user_sync)
+        response = sync_api_client.post('/api/v1/predictions', json=features, auth=test_user_sync)
 
         assert response.status_code == HTTPStatus.OK
         assert response.json() == {'prediction': expected_prediction}

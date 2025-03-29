@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 router = APIRouter()
 
 
-@router.get('/health', status_code=HTTPStatus.OK, summary='Health Check', tags=['system'])
+@router.get('health', status_code=HTTPStatus.OK, summary='Health Check', tags=['system'])
 async def health_check() -> JSONResponse:
     """Возвращает статус работоспособности приложения.
 

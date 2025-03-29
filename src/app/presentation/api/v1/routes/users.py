@@ -24,7 +24,7 @@ user_repository_dependency = Depends(get_user_repository)
 security_service = Depends(get_security_service)
 
 
-@router.get('/users/me', status_code=HTTPStatus.OK, summary='read_current_user')
+@router.get('users/me', status_code=HTTPStatus.OK, summary='read_current_user')
 def read_current_user(current_user: InternalUser = current_user_dependency) -> UserResponse:
     """Возвращает данные текущего аутентифицированного пользователя.
 
@@ -37,7 +37,7 @@ def read_current_user(current_user: InternalUser = current_user_dependency) -> U
     return UserResponse.model_validate(current_user, from_attributes=True)
 
 
-@router.post('/users', status_code=HTTPStatus.CREATED, summary='create_user')
+@router.post('users', status_code=HTTPStatus.CREATED, summary='create_user')
 def create_user(
     user_data: UserCreate,
     security_service: 'SecurityService' = security_service,

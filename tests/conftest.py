@@ -43,7 +43,7 @@ def test_user_sync(sync_api_client: TestClient) -> tuple[str, str]:
     password = uuid.uuid4().hex[:12]
 
     response = sync_api_client.post(
-        '/users/',
+        '/api/v1/users',
         json={
             'username': username,
             'email': f'{username}@example.com',
@@ -64,7 +64,7 @@ async def test_user_async(async_api_client: AsyncClient) -> tuple[str, str]:
     password = uuid.uuid4().hex[:12]
 
     response = await async_api_client.post(
-        '/users/',
+        '/api/v1/users',
         json={
             'username': username,
             'email': f'{username}@example.com',

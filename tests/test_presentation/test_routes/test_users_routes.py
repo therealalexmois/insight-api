@@ -14,7 +14,7 @@ class TestUsersMeEndpoint:
     def test_read_current_user__ok(sync_api_client: 'TestClient', test_user_sync: tuple[str, str]) -> None:
         """Должен возвращать информацию о текущем аутентифицированном пользователе."""
         username, _ = test_user_sync
-        response = sync_api_client.get('/users/me', auth=test_user_sync)
+        response = sync_api_client.get('/api/v1/users/me', auth=test_user_sync)
 
         expected_user = {
             'username': username,
@@ -28,7 +28,7 @@ class TestUsersMeEndpoint:
     @staticmethod
     def test_read_current_user__unauthorized(sync_api_client: 'TestClient') -> None:
         """Должен возвращать 401 Unauthorized, если не предоставлены учетные данные."""
-        response = sync_api_client.get('/users/me')
+        response = sync_api_client.get('/api/v1/users/me')
 
         assert response.status_code == HTTPStatus.UNAUTHORIZED
         assert response.json() == {'detail': 'Not authenticated'}
@@ -43,7 +43,7 @@ class TestUsersMeEndpoint:
     @staticmethod
     def test_read_current_user__invalid_credentials(sync_api_client: 'TestClient') -> None:
         """Должен возвращать 401 Unauthorized для недействительных учетных данных."""
-        response = sync_api_client.get('/users/me', auth=('invalid', 'invalid'))
+        response = sync_api_client.get('/api/v1/users/me', auth=('invalid', 'invalid'))
 
         assert response.status_code == HTTPStatus.UNAUTHORIZED
         assert response.json() == {'detail': 'Incorrect username or password'}
@@ -62,7 +62,7 @@ class TestCreateUserEndpoint:
             'password': 'secure12345',
         }
 
-        response = sync_api_client.post('/users', json=user_data)
+        response = sync_api_client.post('/api/v1/users', json=user_data)
 
         assert response.status_code == HTTPStatus.CREATED
         assert response.json() == {
@@ -81,7 +81,7 @@ class TestCreateUserEndpoint:
             'password': 'secure12345',
         }
 
-        response = sync_api_client.post('/users', json=bad_data)
+        response = sync_api_client.post('/api/v1/users', json=bad_data)
 
         assert response.status_code == HTTPStatus.BAD_REQUEST
 
@@ -110,7 +110,7 @@ class TestCreateUserEndpoint:
             'password': 'securepassword123',
         }
 
-        first_response = sync_api_client.post('/users', json=user_data)
+        first_response = sync_api_client.post('/api/v1/users', json=user_data)
         assert first_response.status_code == HTTPStatus.CREATED
 
         second_response = sync_api_client.post('/users', json=user_data)

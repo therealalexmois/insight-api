@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class TestMain:
     async def test_app_startup__returns_200(self, async_api_client: 'AsyncClient') -> None:
         """Критический тест: приложение должно успешно запускаться и обрабатывать запросы."""
-        response = await async_api_client.get('/health')
+        response = await async_api_client.get('/api/v1/health')
 
         assert response.status_code == HTTPStatus.OK
         assert response.json() == {'status': 'ok'}

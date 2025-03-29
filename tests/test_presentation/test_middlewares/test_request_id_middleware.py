@@ -20,7 +20,7 @@ class TestRequestIdMiddleware:
         async_api_client: 'AsyncClient', test_user_async: tuple[str, str]
     ) -> None:
         """Middleware должен возвращать заголовок X-Request-ID и статус 200."""
-        response = await async_api_client.get('/users/me', auth=test_user_async)
+        response = await async_api_client.get('/api/v1/users/me', auth=test_user_async)
 
         request_id: str = response.headers.get(X_REQUEST_ID_HEADER)
         expected_response_status = 200
@@ -44,7 +44,7 @@ class TestRequestIdMiddleware:
     ) -> None:
         """Проверяет, что клиентский X-Request-ID используется в middleware."""
         response = await async_api_client.get(
-            '/users/me',
+            '/api/v1/users/me',
             headers={X_REQUEST_ID_HEADER: custom_id},
             auth=test_user_async,
         )
@@ -57,7 +57,7 @@ class TestRequestIdMiddleware:
         async_api_client: 'AsyncClient', test_user_async: tuple[str, str]
     ) -> None:
         """Если заголовок X-Request-ID отсутствует, middleware должен сгенерировать его."""
-        response = await async_api_client.get('/users/me', auth=test_user_async)
+        response = await async_api_client.get('/api/v1/users/me', auth=test_user_async)
         request_id: str = response.headers.get(X_REQUEST_ID_HEADER)
         expected_status_code = 200
 
@@ -74,7 +74,7 @@ class TestRequestIdMiddleware:
         """Request ID должен появляться в логах после запроса."""
         caplog.set_level(logging.INFO)
 
-        response = await async_api_client.get('/users/me', auth=test_user_async)
+        response = await async_api_client.get('/api/v1/users/me', auth=test_user_async)
         request_id: str = response.headers.get(X_REQUEST_ID_HEADER)
         expected_status_code = 200
 
@@ -92,7 +92,7 @@ class TestRequestIdMiddleware:
         """Каждый параллельный запрос должен иметь уникальный X-Request-ID."""
 
         async def send_request() -> str:
-            response = await async_api_client.get('/users/me', auth=test_user_async)
+            response = await async_api_client.get('/api/v1/users/me', auth=test_user_async)
             return cast('str', response.headers.get(X_REQUEST_ID_HEADER))
 
         concurrent_requests = 10
