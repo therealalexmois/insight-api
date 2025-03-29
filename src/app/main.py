@@ -15,6 +15,7 @@ from src.app.infrastructure.logger.structlog_logger import StructlogLogger
 from src.app.presentation.exceptions import base_app_error_handler, validation_error_handler
 from src.app.presentation.middlewares.request_id import request_id_middleware
 from src.app.presentation.middlewares.request_logging import request_logging_middleware
+from src.app.presentation.routes.health import router as health_router
 from src.app.presentation.routes.predictions import router as predict_router
 from src.app.presentation.routes.users import router as users_router
 
@@ -48,6 +49,7 @@ def create_app() -> FastAPI:
 
     app.include_router(users_router)
     app.include_router(predict_router)
+    app.include_router(health_router)
 
     app.add_exception_handler(BaseAppError, base_app_error_handler)
     app.add_exception_handler(RequestValidationError, validation_error_handler)
