@@ -6,12 +6,14 @@
 import logging
 import os
 import tomllib
+from datetime import timedelta
 from functools import lru_cache
 from pathlib import Path
 from socket import gethostname
 from typing import cast, Final  # noqa: TC003
 
-from pydantic import Field, field_validator, SecretStr
+from jwt.algorithms import get_default_algorithms
+from pydantic import computed_field, Field, field_validator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.app.domain.constants import AppEnv, LogLevel
@@ -43,6 +45,64 @@ _ENV_SETTINGS: Final[SettingsConfigDict] = SettingsConfigDict(
     env_ignore_empty=True,
     extra='ignore',
 )
+
+
+DEFAULT_JWT_ACCESS_TOKEN_EXPIRES_MINUTES: Final[int] = 15
+DEFAULT_JWT_REFRESH_TOKEN_EXPIRES_MINUTES: Final[int] = 60 * 24 * 7
+
+DEFAULT_JWT_ALGORITHM: Final[str] = 'HS256'
+
+MIN_TOKEN_EXPIRES_MINUTES = 1
+MAX_TOKEN_EXPIRES_MINUTES = 525600
+
+
+class JWTSettings(BaseSettings):
+    """Настройки для работы с JWT."""
+
+    algorithm: str = Field(default=DEFAULT_JWT_ALGORITHM, description='Алгоритм шифрования JWT.')
+    access_token_expire_minutes: int = Field(
+        default=DEFAULT_JWT_ACCESS_TOKEN_EXPIRES_MINUTES, description='Access token expiration time in minutes.'
+    )
+    refresh_token_expire_minutes: int = Field(
+        default=DEFAULT_JWT_REFRESH_TOKEN_EXPIRES_MINUTES, description='Refresh token expiration time in minutes.'
+    )
+
+    model_config = SettingsConfigDict(**_ENV_SETTINGS)
+
+    @computed_field
+    def access_token_expiration(self) -> timedelta:
+        """Возвращает объект timedelta с временем жизни access-токена.
+
+        Returns:
+            Время жизни access-токена в формате timedelta.
+        """
+        return timedelta(minutes=self.access_token_expire_minutes)
+
+    @computed_field
+    def refresh_token_expiration(self) -> timedelta:
+        """Возвращает объект timedelta с временем жизни refresh-токена.
+
+        Returns:
+            Время жизни refresh-токена в формате timedelta.
+        """
+        return timedelta(minutes=self.refresh_token_expire_minutes)
+
+    @field_validator('algorithm')
+    @classmethod
+    def validate_algorithm(cls, value: str) -> str:
+        """Проверяет, поддерживается ли указанный алгоритм JWT."""
+        supported_algorithms = get_default_algorithms().keys()
+        if value not in supported_algorithms:
+            raise ValueError(f'Unsupported JWT algorithm: {value}. Must be one of: {list(supported_algorithms)}')
+        return value
+
+    @field_validator('access_token_expires_minutes', 'refresh_token_expires_minutes')
+    @classmethod
+    def validate_token_expiry(cls, value: int) -> int:
+        """Гарантирует, что срок жизни токена положительный и разумный."""
+        if not (MIN_TOKEN_EXPIRES_MINUTES <= value <= MAX_TOKEN_EXPIRES_MINUTES):
+            raise ValueError('Token expiration must be between 1 and 525600 minutes.')
+        return value
 
 
 class AppSettings(BaseSettings):
@@ -134,6 +194,7 @@ class Settings(BaseSettings):
 
     app: AppSettings = Field(default_factory=AppSettings)
     logging: LoggingSettings = Field(default_factory=LoggingSettings)
+    jwt: JWTSettings = Field(default_factory=JWTSettings)
 
     model_config = SettingsConfigDict(**_ENV_SETTINGS)
 
