@@ -9,7 +9,7 @@ from src.app.application.services.auth_service import authenticate_user
 from src.app.infrastructure.container import AppContainer
 
 if TYPE_CHECKING:
-    from src.app.application.ports.security import SecurityService
+    from src.app.application.ports.security.password_hasher import PasswordHasher
     from src.app.domain.models.user import InternalUser
     from src.app.domain.repositories.user_repository import UserRepository
 
@@ -23,28 +23,28 @@ def get_user_repository() -> 'UserRepository':
     return AppContainer.user_repository()
 
 
-def get_security_service() -> 'SecurityService':
+def get_password_hasher() -> 'PasswordHasher':
     """Возвращает экземпляр сервиса безопасности."""
-    return AppContainer.security_service()
+    return AppContainer.password_hasher()
 
 
 user_repository_dependency = Depends(get_user_repository)
-security_service_dependency = Depends(get_security_service)
+password_hasher_dependency = Depends(get_password_hasher)
 
 
 def get_current_user(
     credentials: HTTPBasicCredentials = credentials,
-    security_service: 'SecurityService' = security_service_dependency,
+    password_hasher: 'PasswordHasher' = password_hasher_dependency,
     user_repository: 'UserRepository' = user_repository_dependency,
 ) -> 'InternalUser':
     """Зависимость для получения текущего аутентифицированного пользователя.
 
     Args:
         credentials: Учетные данные HTTP Basic.
-        security_service: Сервис безопасности.
+        password_hasher: Сервиса хеширования паролей.
         user_repository: Репозиторий пользователей.
 
     Returns:
         Внутренняя модель пользователя, если аутентификация прошла успешно.
     """
-    return authenticate_user(credentials.username, credentials.password, security_service, user_repository)
+    return authenticate_user(credentials.username, credentials.password, password_hasher, user_repository)

@@ -61,15 +61,17 @@ class JWTSettings(BaseSettings):
 
     algorithm: str = Field(default=DEFAULT_JWT_ALGORITHM, description='Алгоритм шифрования JWT.')
     access_token_expire_minutes: int = Field(
-        default=DEFAULT_JWT_ACCESS_TOKEN_EXPIRES_MINUTES, description='Access token expiration time in minutes.'
+        default=DEFAULT_JWT_ACCESS_TOKEN_EXPIRES_MINUTES,
+        description='Время истечения срока действия access токена в минутах.',
     )
     refresh_token_expire_minutes: int = Field(
-        default=DEFAULT_JWT_REFRESH_TOKEN_EXPIRES_MINUTES, description='Refresh token expiration time in minutes.'
+        default=DEFAULT_JWT_REFRESH_TOKEN_EXPIRES_MINUTES,
+        description='Время истечения срока действия refresh токена в минутах.',
     )
 
     model_config = SettingsConfigDict(**_ENV_SETTINGS)
 
-    @computed_field
+    @computed_field(return_type=timedelta)
     def access_token_expiration(self) -> timedelta:
         """Возвращает объект timedelta с временем жизни access-токена.
 
@@ -78,7 +80,7 @@ class JWTSettings(BaseSettings):
         """
         return timedelta(minutes=self.access_token_expire_minutes)
 
-    @computed_field
+    @computed_field(return_type=timedelta)
     def refresh_token_expiration(self) -> timedelta:
         """Возвращает объект timedelta с временем жизни refresh-токена.
 

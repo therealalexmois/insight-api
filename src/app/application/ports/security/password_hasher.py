@@ -1,9 +1,9 @@
-"""Контракт для сервиса безопасности (хеширование и проверка пароля)."""
+"""Контракт для сервиса хеширования паролей."""
 
 from abc import ABC, abstractmethod
 
 
-class SecurityService(ABC):
+class PasswordHasher(ABC):
     """Интерфейс сервиса хеширования паролей."""
 
     @abstractmethod

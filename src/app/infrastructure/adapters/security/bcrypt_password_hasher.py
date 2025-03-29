@@ -5,13 +5,13 @@ from typing import cast
 
 from passlib.context import CryptContext
 
-from src.app.application.ports.security import SecurityService
+from src.app.application.ports.security.password_hasher import PasswordHasher
 from src.app.infrastructure.config import get_settings
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 
-class BcryptSecurityService(SecurityService):
+class BcryptPasswordHasher(PasswordHasher):
     """Хешер паролей с SHA-512 + bcrypt."""
 
     def __init__(self) -> None:
