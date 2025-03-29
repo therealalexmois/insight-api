@@ -43,3 +43,11 @@ class InvalidCredentialsError(BaseAppError):
     def __init__(self) -> None:
         """Ошибка аутентификации (HTTP 401)."""
         super().__init__('Incorrect username or password', status_code=HTTPStatus.UNAUTHORIZED)
+
+
+class InvalidTokenError(BaseAppError):
+    """Ошибка: токен недействителен, подпись некорректна или срок действия истёк."""
+
+    def __init__(self) -> None:
+        """Ошибка аутентификации (HTTP 401)."""
+        super().__init__('Invalid or expired token', status_code=HTTPStatus.UNAUTHORIZED)

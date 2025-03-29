@@ -1,7 +1,10 @@
 """Доменная модель пользователя."""
 
 from dataclasses import dataclass
-from typing import Final  # noqa: TC003
+from typing import Final, TYPE_CHECKING  # noqa: TC003
+
+if TYPE_CHECKING:
+    from src.app.domain.value_objects.role import Role
 
 DEFAULT_ADULT_AGE: Final[int] = 18
 
@@ -23,7 +26,6 @@ class User:
         return self.age >= DEFAULT_ADULT_AGE
 
 
-# TODO: Убрать эту модель
 @dataclass(frozen=True)
 class InternalUser(User):
     """Внутренняя модель пользователя, содержащая хеш пароля.
@@ -32,3 +34,4 @@ class InternalUser(User):
     """
 
     hashed_password: str
+    role: 'Role'

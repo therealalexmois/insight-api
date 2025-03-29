@@ -10,7 +10,7 @@ from src.app.infrastructure.config import get_settings
 from src.app.infrastructure.presenters.user_presenter import UserPresenter
 from src.app.presentation.schemas.user import UserCreate, UserResponse
 from src.app.presentation.webserver.dependencies import (  # noqa: TCH001
-    CurrentUserDep,
+    CurrentUserHTTPBasicDep,
     HasherDep,
     UserRepoDep,
 )
@@ -21,7 +21,7 @@ router = APIRouter()
 
 
 @router.get('users/me', status_code=HTTPStatus.OK, summary='read_current_user')
-def read_current_user(current_user: CurrentUserDep) -> UserResponse:
+def read_current_user(current_user: CurrentUserHTTPBasicDep) -> UserResponse:
     """Возвращает данные текущего аутентифицированного пользователя.
 
     Args:
@@ -57,6 +57,7 @@ def create_user(
         email=user_data.email,
         age=user_data.age,
         hashed_password=password_hasher.hash(user_data.password),
+        role=user_data.role,
     )
 
     user_repository.add(internal_user)
