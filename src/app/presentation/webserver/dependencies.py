@@ -7,7 +7,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials, OAuth2PasswordBear
 
 from src.app.application.ports.security.password_hasher import PasswordHasher
 from src.app.application.ports.security.token_service import TokenService
-from src.app.application.services.auth_service import resolve_current_user, verify_password
+from src.app.application.services.auth_service import authenticate_user, resolve_current_user
 from src.app.domain.exceptions import InvalidTokenError
 from src.app.domain.models.user import InternalUser, User
 from src.app.domain.repositories.user_repository import UserRepository
@@ -69,8 +69,10 @@ def get_current_user_http_basic(
     Returns:
         Внутренняя модель пользователя, если аутентификация прошла успешно.
     """
-    user = resolve_current_user(credentials.username, user_repository)
-    verify_password(credentials.password, user.hashed_password, password_hasher)
+    username, password = credentials.username, credentials.password
+    user = authenticate_user(
+        username=username, password=password, user_repository=user_repository, password_hasher=password_hasher
+    )
     return user
 
 

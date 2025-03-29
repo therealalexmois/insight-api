@@ -17,7 +17,7 @@ from src.app.presentation.webserver.dependencies import (  # noqa: TCH001
 
 settings = get_settings()
 
-router = APIRouter()
+router = APIRouter(tags=['users'])
 
 
 @router.get('users/me', status_code=HTTPStatus.OK, summary='read_current_user')

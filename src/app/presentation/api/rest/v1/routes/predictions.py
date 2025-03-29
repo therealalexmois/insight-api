@@ -7,10 +7,10 @@ from fastapi import APIRouter
 from src.app.application.services.inference_service import predict_from_features
 from src.app.presentation.schemas.prediction import PredictRequest, PredictResponse
 
-router = APIRouter()
+router = APIRouter(tags=['predictions'])
 
 
-@router.post('predictions', status_code=HTTPStatus.OK, summary='predict')
+@router.post('predictions', status_code=HTTPStatus.OK, summary='predictions')
 def predict(request: PredictRequest) -> PredictResponse:
     """Возвращает предсказание модели на основе входных признаков.
 

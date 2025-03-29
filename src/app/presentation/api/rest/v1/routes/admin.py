@@ -7,7 +7,9 @@ from fastapi.responses import JSONResponse
 
 from src.app.presentation.webserver.dependencies import AdminUserDep  # noqa: TC001
 
-router = APIRouter()
+router = APIRouter(
+    tags=['admin'],
+)
 
 
 @router.get('admin', status_code=HTTPStatus.OK, summary='Admin Check')

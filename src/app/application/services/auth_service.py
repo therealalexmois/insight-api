@@ -47,3 +47,28 @@ def resolve_current_user(
         raise InvalidCredentialsError()
 
     return user
+
+
+def authenticate_user(
+    username: str,
+    password: str,
+    password_hasher: 'PasswordHasher',
+    user_repository: 'UserRepository',
+) -> 'InternalUser':
+    """Аутентифицирует пользователя по имени и паролю.
+
+    Args:
+        username: Имя пользователя.
+        password: Пароль.
+        password_hasher: Сервис по работе с паролями.
+        user_repository: Репозиторий пользователей.
+
+    Returns:
+        Пользователь, если аутентификация прошла успешно.
+
+    Raises:
+        InvalidCredentialsError: Если пользователь не найден или пароль неверен.
+    """
+    user: InternalUser = resolve_current_user(username, user_repository)
+    verify_password(password, user.hashed_password, password_hasher)
+    return user
