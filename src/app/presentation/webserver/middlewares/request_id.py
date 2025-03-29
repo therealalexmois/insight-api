@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from src.app.infrastructure.logger.context import DEFAULT_REQUEST_ID_HEADER, extract_request_id, set_request_id
+from src.app.infrastructure.adapters.logger.context import DEFAULT_REQUEST_ID_HEADER, extract_request_id, set_request_id
 
 if TYPE_CHECKING:
     from starlette.middleware.base import RequestResponseEndpoint

@@ -8,8 +8,9 @@ from fastapi import APIRouter, Depends
 
 from src.app.domain.models.user import InternalUser
 from src.app.infrastructure.config import get_settings
-from src.app.presentation.dependencies import get_current_user, get_security_service, get_user_repository
+from src.app.infrastructure.presenters.user_presenter import UserPresenter
 from src.app.presentation.schemas.user import UserCreate, UserResponse
+from src.app.presentation.webserver.dependencies import get_current_user, get_security_service, get_user_repository
 
 if TYPE_CHECKING:
     from src.app.application.ports.security import SecurityService
@@ -34,7 +35,7 @@ def read_current_user(current_user: InternalUser = current_user_dependency) -> U
     Returns:
         Модель пользователя без пароля.
     """
-    return UserResponse.model_validate(current_user, from_attributes=True)
+    return UserPresenter.to_response(current_user)
 
 
 @router.post('users', status_code=HTTPStatus.CREATED, summary='create_user')

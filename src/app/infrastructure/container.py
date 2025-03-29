@@ -3,9 +3,9 @@
 from typing import TYPE_CHECKING
 
 from src.app.domain.constants import LOGGER_NAME
-from src.app.infrastructure.logger.structlog_logger import StructlogLogger
-from src.app.infrastructure.repositories.in_memory_user_repository import InMemoryUserRepository
-from src.app.infrastructure.security.bcrypt_security_service import BcryptSecurityService
+from src.app.infrastructure.adapters.logger.structlog_logger import StructlogLogger
+from src.app.infrastructure.adapters.repositories.in_memory_user_repository import InMemoryUserRepository
+from src.app.infrastructure.adapters.security.bcrypt_security_service import BcryptSecurityService
 
 if TYPE_CHECKING:
     from src.app.application.ports.logger import Logger

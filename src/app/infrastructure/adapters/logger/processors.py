@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from structlog.processors import ExceptionRenderer
 
 from src.app.domain.constants import LogAttrName
-from src.app.infrastructure.logger.context import get_request_id
+from src.app.infrastructure.adapters.logger.context import get_request_id
 
 if TYPE_CHECKING:
     from structlog.typing import EventDict, WrappedLogger

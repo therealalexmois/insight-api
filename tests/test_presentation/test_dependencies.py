@@ -2,7 +2,7 @@ import pytest
 
 from src.app.domain.repositories.user_repository import UserRepository
 from src.app.infrastructure.container import AppContainer
-from src.app.presentation.dependencies import get_user_repository
+from src.app.presentation.webserver.dependencies import get_user_repository
 
 
 @pytest.mark.unit

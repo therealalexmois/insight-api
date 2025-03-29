@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     from src.app.domain.constants import AppEnv, LogLevel
 
 
-from src.app.infrastructure.logger.processors import (
+from src.app.infrastructure.adapters.logger.processors import (
     CommonAttrsAdder,
     ExceptionInfoAttrRenamer,
     LogLevelNormalizer,
