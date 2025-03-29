@@ -2,31 +2,26 @@
 
 from dataclasses import asdict
 from http import HTTPStatus
-from typing import TYPE_CHECKING
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 from src.app.domain.models.user import InternalUser
 from src.app.infrastructure.config import get_settings
 from src.app.infrastructure.presenters.user_presenter import UserPresenter
 from src.app.presentation.schemas.user import UserCreate, UserResponse
-from src.app.presentation.webserver.dependencies import get_current_user, get_password_hasher, get_user_repository
-
-if TYPE_CHECKING:
-    from src.app.application.ports.security.password_hasher import PasswordHasher
-    from src.app.domain.repositories.user_repository import UserRepository
+from src.app.presentation.webserver.dependencies import (  # noqa: TCH001
+    CurrentUserDep,
+    HasherDep,
+    UserRepoDep,
+)
 
 settings = get_settings()
 
 router = APIRouter()
 
-current_user_dependency = Depends(get_current_user)
-user_repository_dependency = Depends(get_user_repository)
-password_hasher = Depends(get_password_hasher)
-
 
 @router.get('users/me', status_code=HTTPStatus.OK, summary='read_current_user')
-def read_current_user(current_user: InternalUser = current_user_dependency) -> UserResponse:
+def read_current_user(current_user: CurrentUserDep) -> UserResponse:
     """Возвращает данные текущего аутентифицированного пользователя.
 
     Args:
@@ -41,8 +36,8 @@ def read_current_user(current_user: InternalUser = current_user_dependency) -> U
 @router.post('users', status_code=HTTPStatus.CREATED, summary='create_user')
 def create_user(
     user_data: UserCreate,
-    password_hasher: 'PasswordHasher' = password_hasher,
-    user_repository: 'UserRepository' = user_repository_dependency,
+    password_hasher: HasherDep,
+    user_repository: UserRepoDep,
 ) -> UserResponse:
     """Создаёт нового пользователя и сохраняет его в репозиторий.
 
