@@ -13,7 +13,7 @@ from socket import gethostname
 from typing import cast, Final  # noqa: TC003
 
 from jwt.algorithms import get_default_algorithms
-from pydantic import computed_field, Field, field_validator, SecretStr
+from pydantic import Field, field_validator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.app.domain.constants import AppEnv, LogLevel
@@ -71,7 +71,7 @@ class JWTSettings(BaseSettings):
 
     model_config = SettingsConfigDict(**_ENV_SETTINGS)
 
-    @computed_field(return_type=timedelta)
+    @property
     def access_token_expiration(self) -> timedelta:
         """Возвращает объект timedelta с временем жизни access-токена.
 
@@ -80,7 +80,7 @@ class JWTSettings(BaseSettings):
         """
         return timedelta(minutes=self.access_token_expire_minutes)
 
-    @computed_field(return_type=timedelta)
+    @property
     def refresh_token_expiration(self) -> timedelta:
         """Возвращает объект timedelta с временем жизни refresh-токена.
 
@@ -98,7 +98,7 @@ class JWTSettings(BaseSettings):
             raise ValueError(f'Unsupported JWT algorithm: {value}. Must be one of: {list(supported_algorithms)}')
         return value
 
-    @field_validator('access_token_expires_minutes', 'refresh_token_expires_minutes')
+    @field_validator('access_token_expire_minutes', 'refresh_token_expire_minutes')
     @classmethod
     def validate_token_expiry(cls, value: int) -> int:
         """Гарантирует, что срок жизни токена положительный и разумный."""

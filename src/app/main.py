@@ -12,7 +12,7 @@ from src.app.infrastructure.adapters.logger.logging import configure_logging
 from src.app.infrastructure.adapters.logger.structlog_logger import StructlogLogger
 from src.app.infrastructure.config import get_settings
 from src.app.infrastructure.initializers.user_repository_initializer import init_fake_users
-from src.app.presentation.api.v1 import api_v1_router
+from src.app.presentation.api.rest.v1.router import api_v1_router
 from src.app.presentation.webserver.exceptions import base_app_error_handler, validation_error_handler
 from src.app.presentation.webserver.middlewares.request_id import request_id_middleware
 from src.app.presentation.webserver.middlewares.request_logging import request_logging_middleware

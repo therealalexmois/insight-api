@@ -1,8 +1,9 @@
-"""Обработчики исключений для FastAPI-приложения."""
+"""Утилиты уровня представления, связанные с авторизацией и HTTP-исключениями."""
 
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
+from fastapi import HTTPException, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
@@ -57,6 +58,22 @@ async def validation_error_handler(_: 'Request', exc: 'Exception') -> JSONRespon
     return _internal_error_response(
         status_code=int(HTTPStatus.INTERNAL_SERVER_ERROR),
         content=HTTPStatus.INTERNAL_SERVER_ERROR.phrase,
+    )
+
+
+def build_unauthorized_exception(detail: str | None = HTTPStatus.UNAUTHORIZED.phrase) -> HTTPException:
+    """Создает исключение HTTP 401 с заголовком WWW-Authenticate.
+
+    Args:
+        detail: Сообщение об ошибке.
+
+    Returns:
+        Исключение HTTPException с кодом 401.
+    """
+    return HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=detail,
+        headers={'WWW-Authenticate': 'Bearer'},
     )
 
 

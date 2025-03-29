@@ -30,7 +30,7 @@ class AppContainer:
     _token_service: 'TokenService' = PyJWTTokenService(
         secret_key=settings.app.secret_key.get_secret_value(),
         algorithm=settings.jwt.algorithm,
-        expiration=settings.jwt.access_token_expiration(),
+        expiration=settings.jwt.access_token_expiration,
     )
 
     @classmethod

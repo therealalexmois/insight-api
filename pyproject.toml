@@ -31,6 +31,7 @@ structlog = "==25.2.0"
 uvicorn = "==0.30.0"
 orjson = "==3.10.16"
 pyjwt = "==2.10.1"
+strawberry-graphql = {extras = ["fastapi"], version = "==0.262.6"}
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "==4.1.0"
